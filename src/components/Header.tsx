@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Bell, Dna, Atom } from 'lucide-react';
+import { Bell, Pill, CircleCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -54,16 +54,19 @@ export default function Header() {
         <div className="flex items-center gap-2">
           <a href="/" className="flex items-center gap-1.5 group relative">
             <div className="relative">
-              <Dna className="w-8 h-8 text-primary/90 animate-[spin_8s_linear_infinite] transform-gpu" />
+              <Pill 
+                className="w-8 h-8 text-primary/90 rotate-45 transition-all duration-500 group-hover:rotate-0 transform-gpu" 
+                strokeWidth={2.5}
+              />
               <div className="absolute inset-0 flex items-center justify-center">
-                <Atom 
-                  className="w-6 h-6 text-accent opacity-90 animate-[float-slow_6s_ease-in-out_infinite] transform-gpu" 
+                <CircleCheck 
+                  className="w-5 h-5 text-accent opacity-90 animate-[pulse_2s_ease-in-out_infinite] transform-gpu" 
                   style={{ filter: 'drop-shadow(0 0 8px var(--primary))' }}
                 />
               </div>
-              <div className="absolute inset-0 rounded-full bg-gradient-to-tl from-sky-400/20 via-blue-500/20 to-indigo-400/20 blur-lg -z-10 group-hover:from-sky-400/30 group-hover:via-blue-500/30 group-hover:to-indigo-400/30 transition-all duration-500" />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tl from-primary/20 via-accent/20 to-primary/20 blur-lg -z-10 group-hover:from-primary/30 group-hover:via-accent/30 group-hover:to-primary/30 transition-all duration-500" />
             </div>
-            <span className="text-xl font-semibold bg-gradient-to-r from-sky-500 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
+            <span className="text-xl font-semibold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
               PillPal
             </span>
           </a>
@@ -132,4 +135,3 @@ export default function Header() {
     </header>
   );
 }
-
