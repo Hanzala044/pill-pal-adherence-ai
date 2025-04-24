@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Bell, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,9 +11,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 export default function Header() {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleNotificationClick = () => {
     toast({
@@ -24,10 +25,26 @@ export default function Header() {
   };
 
   const handleProfileAction = (action: string) => {
-    toast({
-      title: action,
-      description: `You clicked on ${action}`,
-    });
+    switch(action) {
+      case "Profile":
+        navigate('/profile');
+        break;
+      case "Settings":
+        navigate('/settings');
+        break;
+      case "Log out":
+        toast({
+          title: "Logged out",
+          description: "You have been successfully logged out"
+        });
+        navigate('/');
+        break;
+      default:
+        toast({
+          title: action,
+          description: `You clicked on ${action}`,
+        });
+    }
   };
 
   return (
