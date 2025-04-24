@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { Bell, Brain, Heart } from 'lucide-react';
+import { Bell, Dna, Atom } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -53,16 +54,16 @@ export default function Header() {
         <div className="flex items-center gap-2">
           <a href="/" className="flex items-center gap-1.5 group relative">
             <div className="relative">
-              <Brain className="w-8 h-8 text-primary/80 rotate-45 transition-transform group-hover:rotate-0 duration-500" />
+              <Dna className="w-8 h-8 text-primary/90 animate-[spin_8s_linear_infinite] transform-gpu" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <Heart 
-                  className="w-6 h-6 text-accent opacity-90 animate-[pulse_3s_ease-in-out_infinite] transform-gpu" 
+                <Atom 
+                  className="w-6 h-6 text-accent opacity-90 animate-[float-slow_6s_ease-in-out_infinite] transform-gpu" 
                   style={{ filter: 'drop-shadow(0 0 8px var(--primary))' }}
                 />
               </div>
-              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-sky-400/20 via-purple-400/20 to-pink-400/20 blur-lg -z-10 group-hover:from-sky-400/30 group-hover:via-purple-400/30 group-hover:to-pink-400/30 transition-all duration-500" />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tl from-sky-400/20 via-blue-500/20 to-indigo-400/20 blur-lg -z-10 group-hover:from-sky-400/30 group-hover:via-blue-500/30 group-hover:to-indigo-400/30 transition-all duration-500" />
             </div>
-            <span className="text-xl font-semibold bg-gradient-to-r from-primary via-purple-500 to-accent bg-clip-text text-transparent">
+            <span className="text-xl font-semibold bg-gradient-to-r from-sky-500 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
               PillPal
             </span>
           </a>
@@ -131,3 +132,4 @@ export default function Header() {
     </header>
   );
 }
+
