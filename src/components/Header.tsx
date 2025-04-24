@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bell, User } from 'lucide-react';
+import { Bell, User, CircleCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -51,14 +51,15 @@ export default function Header() {
     <header className="bg-card border-b border-border sticky top-0 z-40">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-2">
-          <a href="/">
-            <img 
-              src="/placeholder.svg" 
-              alt="PillPal Logo" 
-              className="w-8 h-8"
-            />
+          <a href="/" className="relative group">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-sky-500 to-mint-500 blur-md opacity-75 group-hover:opacity-100 transition-opacity"></div>
+              <div className="relative bg-white rounded-full p-2">
+                <CircleCheck className="w-8 h-8 text-sky-600" />
+              </div>
+            </div>
           </a>
-          <h1 className="text-xl font-semibold text-primary">PillPal</h1>
+          <h1 className="text-xl font-semibold gradient-text">PillPal</h1>
         </div>
         
         <div className="flex items-center gap-4">
