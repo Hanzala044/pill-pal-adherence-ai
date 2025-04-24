@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -102,13 +101,25 @@ export default {
 				'fade-in': {
 					'0%': { opacity: '0' },
 					'100%': { opacity: '1' }
+				},
+				"float-slow": {
+					"0%, 100%": {
+						transform: "translate(0, 0) scale(1)",
+					},
+					"33%": {
+						transform: "translate(30px, -50px) scale(1.05)",
+					},
+					"66%": {
+						transform: "translate(-20px, 20px) scale(0.95)",
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'pulse-ring': 'pulse-ring 1.5s cubic-bezier(0.24, 0, 0.38, 1) infinite',
-				'fade-in': 'fade-in 0.5s ease-out'
+				'fade-in': 'fade-in 0.5s ease-out',
+				"float-slow": "float-slow 20s ease-in-out infinite"
 			}
 		}
 	},

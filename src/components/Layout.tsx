@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Header from './Header';
 import { Outlet, useLocation } from 'react-router-dom';
@@ -6,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Home, Camera, PillIcon, Calendar, Menu } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
+import AnimatedBackground from './AnimatedBackground';
 
 export default function Layout() {
   const location = useLocation();
@@ -20,6 +20,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <AnimatedBackground />
       <Header />
       
       <div className="flex-1 flex">
@@ -69,7 +70,7 @@ export default function Layout() {
           </div>
         )}
         
-        <main className={`flex-1 p-6 pb-20 md:pb-6 container mx-auto max-w-5xl`}>
+        <main className={`flex-1 p-6 pb-20 md:pb-6 container mx-auto max-w-5xl relative z-10`}>
           <Outlet />
         </main>
       </div>
