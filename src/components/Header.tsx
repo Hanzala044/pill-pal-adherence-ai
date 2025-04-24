@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Bell, Pill, CircleCheck } from 'lucide-react';
+import { Bell, TestTube, Flask } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -49,24 +48,29 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-card border-b border-border sticky top-0 z-40">
+    <header className="bg-gradient-to-r from-[#1a1a1a] to-[#2d1f3d] border-b border-[#8B5CF6]/20 sticky top-0 z-40 backdrop-blur-sm">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-2">
-          <a href="/" className="flex items-center gap-1.5 group relative">
+          <a href="/" className="flex items-center gap-2 group relative">
             <div className="relative">
-              <Pill 
-                className="w-8 h-8 text-primary/90 rotate-45 transition-all duration-500 group-hover:rotate-0 transform-gpu" 
+              <TestTube 
+                className="w-8 h-8 text-[#8B5CF6] rotate-12 transition-all duration-500 group-hover:rotate-0 transform-gpu" 
                 strokeWidth={2.5}
               />
               <div className="absolute inset-0 flex items-center justify-center">
-                <CircleCheck 
-                  className="w-5 h-5 text-accent opacity-90 animate-[pulse_2s_ease-in-out_infinite] transform-gpu" 
-                  style={{ filter: 'drop-shadow(0 0 8px var(--primary))' }}
+                <Flask 
+                  className="w-5 h-5 text-[#D946EF] opacity-90 animate-[pulse_2s_ease-in-out_infinite] transform-gpu" 
+                  style={{ 
+                    filter: 'drop-shadow(0 0 10px #8B5CF6) drop-shadow(0 0 20px #D946EF)',
+                    animation: 'float-slow 3s ease-in-out infinite'
+                  }}
                 />
               </div>
-              <div className="absolute inset-0 rounded-full bg-gradient-to-tl from-primary/20 via-accent/20 to-primary/20 blur-lg -z-10 group-hover:from-primary/30 group-hover:via-accent/30 group-hover:to-primary/30 transition-all duration-500" />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tl from-[#8B5CF6]/20 via-[#D946EF]/20 to-[#8B5CF6]/20 blur-xl -z-10 group-hover:from-[#8B5CF6]/30 group-hover:via-[#D946EF]/30 group-hover:to-[#8B5CF6]/30 transition-all duration-500" />
             </div>
-            <span className="text-xl font-semibold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+            <span className="text-2xl font-bold bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#8B5CF6] bg-clip-text text-transparent font-space tracking-wider hover:scale-105 transition-transform duration-300" style={{
+              textShadow: '0 0 20px rgba(139, 92, 246, 0.5)'
+            }}>
               PillPal
             </span>
           </a>
