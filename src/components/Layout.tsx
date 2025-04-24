@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Header from './Header';
 import { Outlet, useLocation } from 'react-router-dom';
@@ -25,7 +26,7 @@ export default function Layout() {
       
       <div className="flex-1 flex">
         {isMobile ? (
-          <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border p-2">
+          <div className="fixed bottom-0 left-0 right-0 z-50 gradient-card p-2">
             <div className="flex justify-around items-center">
               {navigation.map((item) => {
                 const Icon = item.icon;
@@ -46,7 +47,7 @@ export default function Layout() {
             </div>
           </div>
         ) : (
-          <div className="w-64 bg-card border-r border-border p-4 hidden md:block">
+          <div className="w-64 gradient-card border-r border-border/30 p-4 hidden md:block">
             <nav className="space-y-2">
               {navigation.map((item) => {
                 const Icon = item.icon;
@@ -57,8 +58,8 @@ export default function Layout() {
                     href={item.href}
                     className={`flex items-center space-x-3 px-3 py-2 rounded-md transition-colors ${
                       isActive 
-                        ? 'bg-primary text-primary-foreground' 
-                        : 'hover:bg-accent text-muted-foreground hover:text-accent-foreground'
+                        ? 'gradient-button text-white' 
+                        : 'hover:gradient-border text-muted-foreground hover:text-accent-foreground'
                     }`}
                   >
                     <Icon className="h-5 w-5" />
@@ -70,7 +71,7 @@ export default function Layout() {
           </div>
         )}
         
-        <main className={`flex-1 p-6 pb-20 md:pb-6 container mx-auto max-w-5xl relative z-10`}>
+        <main className="flex-1 p-6 pb-20 md:pb-6 container mx-auto max-w-5xl relative z-10">
           <Outlet />
         </main>
       </div>
