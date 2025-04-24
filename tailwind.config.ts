@@ -61,6 +61,17 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				mint: {
+					50: '#f2fcf9',
+					500: '#10B981',
+					600: '#059669',
+				},
+				sky: {
+					100: '#e0f2fe',
+					200: '#bae6fd',
+					500: '#0ea5e9',
+					600: '#0284c7',
 				}
 			},
 			borderRadius: {
