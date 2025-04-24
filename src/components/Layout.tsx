@@ -56,10 +56,10 @@ export default function Layout() {
                   <a
                     key={item.name}
                     href={item.href}
-                    className={`flex items-center space-x-3 px-3 py-2 rounded-md transition-all duration-300 ${
+                    className={`flex items-center space-x-3 px-3 py-2 rounded-md transition-colors ${
                       isActive 
-                        ? 'gradient-button text-white shadow-lg' 
-                        : 'hover:gradient-border text-muted-foreground hover:text-accent-foreground hover:scale-105'
+                        ? 'gradient-button text-white' 
+                        : 'hover:gradient-border text-muted-foreground hover:text-accent-foreground'
                     }`}
                   >
                     <Icon className="h-5 w-5" />
@@ -71,14 +71,8 @@ export default function Layout() {
           </div>
         )}
         
-        <main className="flex-1 relative">
-          <div className="curved-panel">
-            <div className="panel-content">
-              <div className="container mx-auto max-w-5xl p-6 pb-20 md:pb-6">
-                <Outlet />
-              </div>
-            </div>
-          </div>
+        <main className="flex-1 p-6 pb-20 md:pb-6 container mx-auto max-w-5xl relative z-10">
+          <Outlet />
         </main>
       </div>
     </div>
