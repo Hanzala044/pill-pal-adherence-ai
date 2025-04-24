@@ -4,7 +4,7 @@ const AnimatedBackground = () => {
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden">
       {/* Gradient base */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 via-purple-400/20 to-teal-400/20 dark:from-blue-900/30 dark:via-purple-900/30 dark:to-teal-900/30" />
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-400/20 via-pink-400/20 to-purple-400/20 dark:from-purple-900/30 dark:via-pink-900/30 dark:to-purple-900/30" />
       
       {/* Neural network pattern overlay */}
       <div className="absolute inset-0 opacity-[0.15] dark:opacity-[0.07]">

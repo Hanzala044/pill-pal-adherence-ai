@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,14 +7,15 @@ import { formatDistanceToNow } from 'date-fns';
 
 interface MedicationCardProps {
   medication: Medication;
+  className?: string;
 }
 
-export default function MedicationCard({ medication }: MedicationCardProps) {
+export default function MedicationCard({ medication, className }: MedicationCardProps) {
   const formattedNextDose = formatDistanceToNow(new Date(medication.nextDose), { addSuffix: true });
   const isOverdue = new Date(medication.nextDose) < new Date();
   
   return (
-    <Card className={`overflow-hidden ${isOverdue ? 'border-red-400' : ''}`}>
+    <Card className={`overflow-hidden ${isOverdue ? 'border-red-400' : ''} ${className || ''}`}>
       <CardHeader className="pb-2">
         <CardTitle className="text-lg">{medication.name}</CardTitle>
         <CardDescription>{medication.dosage} - {medication.schedule}</CardDescription>
