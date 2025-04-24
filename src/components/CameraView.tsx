@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Camera, CheckCircle, X, PillIcon, UserCheck } from 'lucide-react';
@@ -14,32 +14,69 @@ export default function CameraView() {
   const [complete, setComplete] = useState(false);
   const [selectedMedication, setSelectedMedication] = useState(mockMedications[0]);
   const { toast } = useToast();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
-  // Mock camera activation
-  const activateCamera = () => {
-    setCameraActive(true);
-    toast({
-      title: "Camera activated",
-      description: "Please center the pill in the frame",
-    });
-    
-    // Simulate pill detection after a delay
-    setTimeout(() => {
-      setPillDetected(true);
-      toast({
-        title: "Pill detected",
-        description: "Verifying medication...",
+  // Clean up function to stop camera when component unmounts or camera deactivates
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, []);
+
+  // Function to start the camera
+  const activateCamera = async () => {
+    try {
+      // Request access to the user's camera
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: 'environment', // Use back camera on mobile if available
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        } 
       });
       
-      // Simulate user verification after pill detection
+      // Save stream reference for cleanup
+      streamRef.current = stream;
+      
+      // Set the stream as the video element's source
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+      
+      setCameraActive(true);
+      toast({
+        title: "Camera activated",
+        description: "Please center the pill in the frame",
+      });
+      
+      // Simulate pill detection after a delay
       setTimeout(() => {
-        setUserVerified(true);
+        setPillDetected(true);
         toast({
-          title: "User verified",
-          description: "Medication intake confirmed",
+          title: "Pill detected",
+          description: "Verifying medication...",
         });
-      }, 1500);
-    }, 2000);
+        
+        // Simulate user verification after pill detection
+        setTimeout(() => {
+          setUserVerified(true);
+          toast({
+            title: "User verified",
+            description: "Medication intake confirmed",
+          });
+        }, 1500);
+      }, 2000);
+    } catch (error) {
+      console.error("Error accessing camera:", error);
+      toast({
+        title: "Camera Error",
+        description: "Could not access your camera. Please check permissions.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleCapture = () => {
@@ -58,6 +95,18 @@ export default function CameraView() {
   };
 
   const resetCamera = () => {
+    // Stop all tracks from the stream
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    
+    // Reset video element
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+    
+    // Reset states
     setCameraActive(false);
     setPillDetected(false);
     setUserVerified(false);
@@ -84,6 +133,16 @@ export default function CameraView() {
               </div>
             ) : (
               <>
+                <video 
+                  ref={videoRef} 
+                  autoPlay 
+                  playsInline 
+                  className="absolute inset-0 w-full h-full object-cover"
+                  onLoadedMetadata={() => {
+                    if (videoRef.current) videoRef.current.play();
+                  }}
+                />
+                
                 <div className="absolute inset-0 flex items-center justify-center">
                   {!complete ? (
                     <div className="w-48 h-48 rounded-full border-4 border-primary/50 flex items-center justify-center">
