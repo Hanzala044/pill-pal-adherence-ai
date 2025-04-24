@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import CameraPage from "./pages/CameraPage";
 import MedicationPage from "./pages/MedicationPage";
 import HistoryPage from "./pages/HistoryPage";
+import ProfilePage from "./pages/ProfilePage";
+import SettingsPage from "./pages/SettingsPage";
 import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
 
