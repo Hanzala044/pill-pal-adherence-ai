@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { Bell, User } from 'lucide-react';
+import { Bell, Brain, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -51,14 +52,16 @@ export default function Header() {
     <header className="bg-card border-b border-border sticky top-0 z-40">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-2">
-          <a href="/">
-            <img 
-              src="/placeholder.svg" 
-              alt="PillPal Logo" 
-              className="w-8 h-8"
-            />
+          <a href="/" className="flex items-center gap-1.5 group relative">
+            <div className="relative">
+              <Brain className="w-8 h-8 text-primary transition-colors group-hover:text-accent" />
+              <Heart className="w-8 h-8 absolute top-0 left-0 text-primary/30 animate-pulse opacity-70" />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-sky-400/20 to-teal-400/20 blur-lg -z-10 group-hover:from-sky-400/30 group-hover:to-teal-400/30 transition-all duration-300" />
+            </div>
+            <span className="text-xl font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              PillPal
+            </span>
           </a>
-          <h1 className="text-xl font-semibold text-primary">PillPal</h1>
         </div>
         
         <div className="flex items-center gap-4">
