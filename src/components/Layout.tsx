@@ -3,8 +3,7 @@ import React from 'react';
 import Header from './Header';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Home, Camera, PillIcon, Calendar, Menu } from 'lucide-react';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Home, Camera, PillIcon, Calendar } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import AnimatedBackground from './AnimatedBackground';
 
@@ -24,29 +23,8 @@ export default function Layout() {
       <AnimatedBackground />
       <Header />
       
-      <div className="flex-1 flex">
-        {isMobile ? (
-          <div className="fixed bottom-0 left-0 right-0 z-50 gradient-card p-2">
-            <div className="flex justify-around items-center">
-              {navigation.map((item) => {
-                const Icon = item.icon;
-                const isActive = location.pathname === item.href;
-                return (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className={`flex flex-col items-center p-2 ${
-                      isActive ? 'text-primary' : 'text-muted-foreground'
-                    }`}
-                  >
-                    <Icon className="h-5 w-5" />
-                    <span className="text-xs mt-1">{item.name}</span>
-                  </a>
-                );
-              })}
-            </div>
-          </div>
-        ) : (
+      <div className="flex-1 flex relative">
+        {!isMobile && (
           <div className="w-64 gradient-card border-r border-border/30 p-4 hidden md:block">
             <nav className="space-y-2">
               {navigation.map((item) => {
@@ -71,9 +49,32 @@ export default function Layout() {
           </div>
         )}
         
-        <main className="flex-1 p-6 pb-20 md:pb-6 container mx-auto max-w-5xl relative z-10">
+        <main className="flex-1 p-4 sm:p-6 pb-20 sm:pb-6 container mx-auto max-w-5xl relative z-10">
           <Outlet />
         </main>
+
+        {isMobile && (
+          <nav className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-[#1a1a1a] to-[#2d1f3d] border-t border-[#8B5CF6]/20 backdrop-blur-sm p-2">
+            <div className="flex justify-around items-center">
+              {navigation.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.href;
+                return (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    className={`flex flex-col items-center p-2 ${
+                      isActive ? 'text-primary' : 'text-muted-foreground'
+                    }`}
+                  >
+                    <Icon className="h-5 w-5" />
+                    <span className="text-xs mt-1">{item.name}</span>
+                  </a>
+                );
+              })}
+            </div>
+          </nav>
+        )}
       </div>
     </div>
   );

@@ -1,13 +1,15 @@
-
 import React from 'react';
 import { Clock, CheckCircle, Calendar, Activity, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import MedicationCard from './MedicationCard';
-import { Medication, mockMedications, mockAdherenceHistory } from '@/utils/mockData';
+import { mockMedications, mockAdherenceHistory } from '@/utils/mockData';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export default function Dashboard() {
+  const isMobile = useIsMobile();
+
   const upcomingMeds = mockMedications
     .filter(med => new Date(med.nextDose) > new Date())
     .sort((a, b) => new Date(a.nextDose).getTime() - new Date(b.nextDose).getTime())
@@ -27,12 +29,12 @@ export default function Dashboard() {
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
-        <h1 className="text-3xl font-bold">Welcome back, John</h1>
+        <h1 className={`${isMobile ? 'text-2xl' : 'text-3xl'} font-bold`}>Welcome back, John</h1>
         <p className="text-muted-foreground mt-1">Here's your medication overview for today</p>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-lg font-medium flex items-center gap-2">
@@ -97,7 +99,7 @@ export default function Dashboard() {
       {/* Upcoming Medications */}
       <div>
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Upcoming Medications</h2>
+          <h2 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold`}>Upcoming Medications</h2>
           <Button variant="ghost" size="sm" asChild>
             <a href="/medications">View All</a>
           </Button>
@@ -112,7 +114,7 @@ export default function Dashboard() {
       {/* Recent Activity */}
       <div>
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Recent Activity</h2>
+          <h2 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold`}>Recent Activity</h2>
           <Button variant="ghost" size="sm" asChild>
             <a href="/history">View All</a>
           </Button>
@@ -121,25 +123,27 @@ export default function Dashboard() {
           <CardContent className="p-0">
             <div className="divide-y divide-border">
               {mockAdherenceHistory.slice(0, 5).map((record) => (
-                <div key={record.id} className="flex items-center p-4">
-                  <div className="mr-4">
+                <div key={record.id} className="flex items-center p-3 sm:p-4">
+                  <div className="mr-3 sm:mr-4">
                     {record.status === 'taken' ? (
                       <div className="bg-green-100 text-green-700 p-2 rounded-full">
-                        <CheckCircle className="h-5 w-5" />
+                        <CheckCircle className={`${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
                       </div>
                     ) : record.status === 'missed' ? (
                       <div className="bg-red-100 text-red-700 p-2 rounded-full">
-                        <AlertTriangle className="h-5 w-5" />
+                        <AlertTriangle className={`${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
                       </div>
                     ) : (
                       <div className="bg-yellow-100 text-yellow-700 p-2 rounded-full">
-                        <Clock className="h-5 w-5" />
+                        <Clock className={`${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
                       </div>
                     )}
                   </div>
-                  <div className="flex-1">
-                    <p className="font-medium">{record.medicationName}</p>
-                    <p className="text-sm text-muted-foreground">
+                  <div className="flex-1 min-w-0">
+                    <p className={`font-medium truncate ${isMobile ? 'text-sm' : 'text-base'}`}>
+                      {record.medicationName}
+                    </p>
+                    <p className={`text-muted-foreground ${isMobile ? 'text-xs' : 'text-sm'}`}>
                       {record.status === 'taken' 
                         ? 'Taken' 
                         : record.status === 'missed' 
@@ -147,7 +151,7 @@ export default function Dashboard() {
                           : 'Skipped'}
                     </p>
                   </div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className={`text-muted-foreground ${isMobile ? 'text-xs' : 'text-sm'}`}>
                     {new Date(record.timestamp).toLocaleString([], {
                       month: 'short',
                       day: 'numeric',
