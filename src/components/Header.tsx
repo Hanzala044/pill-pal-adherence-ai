@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { Bell, TestTube, Flask } from 'lucide-react';
+import { Bell, TestTube, Beaker } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -58,7 +59,7 @@ export default function Header() {
                 strokeWidth={2.5}
               />
               <div className="absolute inset-0 flex items-center justify-center">
-                <Flask 
+                <Beaker 
                   className="w-5 h-5 text-[#D946EF] opacity-90 animate-[pulse_2s_ease-in-out_infinite] transform-gpu" 
                   style={{ 
                     filter: 'drop-shadow(0 0 10px #8B5CF6) drop-shadow(0 0 20px #D946EF)',
