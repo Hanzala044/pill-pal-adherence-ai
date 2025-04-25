@@ -1,8 +1,6 @@
 import React from 'react';
 import { Clock, CheckCircle, Calendar, Activity, AlertTriangle } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Button, Progress } from '@/components/ui/shared';
 import MedicationCard from './MedicationCard';
 import { mockMedications, mockAdherenceHistory } from '@/utils/mockData';
 import { useIsMobile } from '@/hooks/use-mobile';

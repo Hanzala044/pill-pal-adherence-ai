@@ -1,9 +1,7 @@
-
 import React from 'react';
 import { Bell, TestTube, Beaker } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, 
+  DropdownMenuSeparator, DropdownMenuTrigger, Avatar, AvatarFallback, AvatarImage } from '@/components/ui/shared';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';

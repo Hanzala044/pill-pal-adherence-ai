@@ -1,6 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Button } from '@/components/ui/shared';
 import { Clock, Info } from 'lucide-react';
 import { Medication } from '@/utils/mockData';
 import { formatDistanceToNow } from 'date-fns';
