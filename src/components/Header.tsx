@@ -6,19 +6,18 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
-
 export default function Header() {
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-
   const handleNotificationClick = () => {
     toast({
       title: "Notifications",
       description: "You have checked your notifications"
     });
   };
-
   const handleProfileAction = (action: string) => {
     switch (action) {
       case "Profile":
@@ -41,29 +40,23 @@ export default function Header() {
         });
     }
   };
-
-  return (
-    <header className="bg-gradient-to-r from-[#1a1a1a] to-[#2d1f3d] border-b border-[#8B5CF6]/20 sticky top-0 z-40 backdrop-blur-sm w-full">
-      <div className="container flex h-16 items-center justify-between px-4 sm:px-[20px] mx-auto">
+  return <header className="bg-gradient-to-r from-[#1a1a1a] to-[#2d1f3d] border-b border-[#8B5CF6]/20 sticky top-0 z-40 backdrop-blur-sm w-full">
+      <div className="container flex h-16 items-center justify-between px-4 sm:px-[20px] mx-auto bg-fuchsia-200">
         <div className="flex items-center gap-2">
           <a href="/" className="flex items-center gap-2 group relative">
             <div className="relative">
               <TestTube className={`${isMobile ? 'w-6 h-6' : 'w-8 h-8'} text-[#8B5CF6] rotate-12 transition-all duration-500 group-hover:rotate-0 transform-gpu`} strokeWidth={2.5} />
               <div className="absolute inset-0 flex items-center justify-center">
-                <Beaker className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-[#D946EF] opacity-90 animate-[pulse_2s_ease-in-out_infinite] transform-gpu`} 
-                  style={{
-                    filter: 'drop-shadow(0 0 10px #8B5CF6) drop-shadow(0 0 20px #D946EF)',
-                    animation: 'float-slow 3s ease-in-out infinite'
-                  }} 
-                />
+                <Beaker className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-[#D946EF] opacity-90 animate-[pulse_2s_ease-in-out_infinite] transform-gpu`} style={{
+                filter: 'drop-shadow(0 0 10px #8B5CF6) drop-shadow(0 0 20px #D946EF)',
+                animation: 'float-slow 3s ease-in-out infinite'
+              }} />
               </div>
               <div className="absolute inset-0 rounded-full bg-gradient-to-tl from-[#8B5CF6]/20 via-[#D946EF]/20 to-[#8B5CF6]/20 blur-xl -z-10 group-hover:from-[#8B5CF6]/30 group-hover:via-[#D946EF]/30 group-hover:to-[#8B5CF6]/30 transition-all duration-500" />
             </div>
-            <span className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#8B5CF6] bg-clip-text text-transparent font-space tracking-wider hover:scale-105 transition-transform duration-300`} 
-              style={{
-                textShadow: '0 0 20px rgba(139, 92, 246, 0.5)'
-              }}
-            >
+            <span className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold bg-gradient-to-r from-[#8B5CF6] via-[#D946EF] to-[#8B5CF6] bg-clip-text text-transparent font-space tracking-wider hover:scale-105 transition-transform duration-300`} style={{
+            textShadow: '0 0 20px rgba(139, 92, 246, 0.5)'
+          }}>
               PillPal
             </span>
           </a>
@@ -129,6 +122,5 @@ export default function Header() {
           </DropdownMenu>
         </div>
       </div>
-    </header>
-  );
+    </header>;
 }
