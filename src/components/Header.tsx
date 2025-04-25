@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Bell, TestTube, Beaker } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,18 +7,21 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
+
 export default function Header() {
   const {
     toast
   } = useToast();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  
   const handleNotificationClick = () => {
     toast({
       title: "Notifications",
       description: "You have checked your notifications"
     });
   };
+  
   const handleProfileAction = (action: string) => {
     switch (action) {
       case "Profile":
@@ -40,8 +44,9 @@ export default function Header() {
         });
     }
   };
+  
   return <header className="bg-gradient-to-r from-[#1a1a1a] to-[#2d1f3d] border-b border-[#8B5CF6]/20 sticky top-0 z-40 backdrop-blur-sm w-full">
-      <div className="container flex h-16 items-center justify-between px-4 sm:px-[20px] mx-auto bg-fuchsia-200">
+      <div className="container flex h-16 items-center justify-between px-4 sm:px-[20px] mx-auto">
         <div className="flex items-center gap-2">
           <a href="/" className="flex items-center gap-2 group relative">
             <div className="relative">
@@ -70,7 +75,7 @@ export default function Header() {
                 <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[280px] sm:w-80">
+            <DropdownMenuContent align="end" className="w-[280px] sm:w-80 z-50 bg-background/95 backdrop-blur-sm">
               <DropdownMenuLabel>Notifications</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <div className="max-h-80 overflow-auto">
@@ -111,7 +116,7 @@ export default function Header() {
                 <span className="hidden sm:inline-block">John Doe</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="z-50 bg-background/95 backdrop-blur-sm">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => handleProfileAction("Profile")}>Profile</DropdownMenuItem>
