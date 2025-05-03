@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -60,11 +61,11 @@
 
 @layer components {
   .gradient-card {
-    @apply bg-gradient-to-br from-purple-100/80 via-pink-50/50 to-purple-100/30 backdrop-blur-sm border border-purple-200/50;
+    @apply bg-gradient-to-br from-purple-100/80 via-pink-50/50 to-purple-100/30 backdrop-blur-sm border border-purple-200/50 shadow-md hover:shadow-lg transition-all duration-300;
   }
 
   .gradient-button {
-    @apply bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white transition-all duration-300;
+    @apply bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white transition-all duration-300 shadow-md hover:shadow-lg;
   }
 
   .gradient-text {
@@ -74,19 +75,17 @@
   .gradient-border {
     @apply border border-transparent bg-gradient-to-r from-purple-200 to-pink-200 hover:from-purple-300 hover:to-pink-300;
   }
-}
-
-@layer components {
-  .gradient-card {
-    @apply bg-gradient-to-br from-white/40 to-white/10 backdrop-blur-sm border border-white/20;
+  
+  .wavy-button {
+    @apply rounded-[12px_24px_12px_24px/24px_12px_24px_12px] shadow-md hover:shadow-lg transition-all duration-300;
   }
-
-  .gradient-button {
-    @apply bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 transition-all duration-300;
+  
+  .diamond-button {
+    @apply rotate-45 bg-gradient-to-r from-purple-500 to-pink-500;
   }
-
-  .gradient-border {
-    @apply border border-transparent bg-gradient-to-r from-primary/20 to-accent/20 hover:from-primary/30 hover:to-accent/30;
+  
+  .diamond-button span {
+    @apply -rotate-45 block;
   }
 }
 
@@ -125,9 +124,11 @@
 @keyframes fade-in {
   0% {
     opacity: 0;
+    transform: translateY(10px);
   }
   100% {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -162,4 +163,26 @@
 
 .animate-float-slow {
   animation: float-slow 20s ease-in-out infinite;
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    left: 150%;
+  }
 }

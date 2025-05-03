@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/shared';
@@ -155,27 +156,57 @@ export default function ServicesPage() {
       </div>
 
       <Tabs defaultValue="medication-verification" className="w-full">
-        <TabsList className="mb-10 flex flex-wrap justify-center bg-transparent gap-3">
-          {services.map((service) => (
-            <TabsTrigger 
-              key={service.id} 
-              value={service.id}
-              className="data-[state=active]:gradient-button px-5 py-2.5 rounded-full transition-all duration-300"
-            >
-              {service.title}
-            </TabsTrigger>
-          ))}
+        <TabsList className="mb-10 flex flex-wrap justify-center bg-transparent gap-4">
+          {services.map((service, index) => {
+            // Create different button styles based on index
+            const getButtonClass = () => {
+              const styles = [
+                "bg-gradient-to-r from-purple-600 to-pink-500 shadow-md hover:shadow-lg hover:from-purple-700 hover:to-pink-600",
+                "bg-gradient-to-r from-indigo-600 to-blue-500 shadow-md hover:shadow-lg hover:from-indigo-700 hover:to-blue-600",
+                "bg-gradient-to-r from-pink-500 to-rose-500 shadow-md hover:shadow-lg hover:from-pink-600 hover:to-rose-600",
+                "bg-gradient-to-r from-violet-600 to-purple-600 shadow-md hover:shadow-lg hover:from-violet-700 hover:to-purple-700",
+                "bg-gradient-to-r from-fuchsia-600 to-purple-600 shadow-md hover:shadow-lg hover:from-fuchsia-700 hover:to-purple-700",
+                "bg-gradient-to-r from-blue-600 to-cyan-600 shadow-md hover:shadow-lg hover:from-blue-700 hover:to-cyan-700",
+                "bg-gradient-to-r from-rose-500 to-orange-500 shadow-md hover:shadow-lg hover:from-rose-600 hover:to-orange-600",
+                "bg-gradient-to-r from-purple-500 to-indigo-500 shadow-md hover:shadow-lg hover:from-purple-600 hover:to-indigo-600",
+              ];
+              
+              // Get shapes based on index
+              const shapes = [
+                "rounded-xl",
+                "rounded-full",
+                "rounded-[16px_8px_16px_8px]",
+                "rounded-[8px_16px_8px_16px]", 
+                "rounded-[16px_16px_8px_8px]",
+                "rounded-[8px_8px_16px_16px]",
+                "rounded-[20px_10px]",
+                "rounded-[10px_20px]",
+              ];
+              
+              return `data-[state=active]:${styles[index % styles.length]} data-[state=active]:${shapes[index % shapes.length]}`;
+            };
+            
+            return (
+              <TabsTrigger 
+                key={service.id} 
+                value={service.id}
+                className={`${getButtonClass()} px-5 py-2.5 transition-all duration-300 data-[state=active]:text-white border border-transparent hover:border-purple-300/30`}
+              >
+                {service.title}
+              </TabsTrigger>
+            );
+          })}
         </TabsList>
 
         {services.map((service) => (
-          <TabsContent key={service.id} value={service.id} className="space-y-8">
-            <Card className="gradient-card">
+          <TabsContent key={service.id} value={service.id} className="space-y-8 animate-fade-in">
+            <Card className="bg-gradient-to-br from-white/90 via-purple-50/50 to-pink-50/30 backdrop-blur-sm border border-purple-200/50 shadow-lg hover:shadow-xl transition-all duration-500">
               <CardHeader className="flex flex-row items-center gap-4">
-                <div className="bg-primary/10 p-3 rounded-full">
+                <div className="bg-gradient-to-br from-primary/20 to-accent/10 p-3 rounded-full shadow-inner">
                   {service.icon}
                 </div>
                 <div>
-                  <CardTitle>{service.title}</CardTitle>
+                  <CardTitle className="bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent">{service.title}</CardTitle>
                   <CardDescription>{service.description}</CardDescription>
                 </div>
               </CardHeader>
@@ -185,10 +216,10 @@ export default function ServicesPage() {
             </Card>
 
             <div className="mt-8">
-              <h3 className="text-lg font-medium mb-4">How It Works</h3>
+              <h3 className="text-lg font-medium mb-4 bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">How It Works</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {service.steps.map((step, index) => (
-                  <Card key={index} className="gradient-card">
+                  <Card key={index} className="bg-gradient-to-br from-white/80 to-purple-50/30 backdrop-blur-sm border border-purple-100/50 shadow-md hover:shadow-lg transition-all duration-300 hover:translate-y-[-5px]">
                     <CardHeader>
                       <CardTitle className="text-lg">{step.title}</CardTitle>
                     </CardHeader>
