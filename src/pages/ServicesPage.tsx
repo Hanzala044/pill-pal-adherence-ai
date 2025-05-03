@@ -154,15 +154,6 @@ export default function ServicesPage() {
         </p>
       </div>
 
-      <div className="bg-primary/5 p-6 rounded-xl mb-8">
-        <h2 className="text-xl font-semibold mb-4 gradient-text">Medication Information Assistant</h2>
-        <p className="text-muted-foreground mb-6">
-          Our AI-powered assistant can answer your questions about medications, their uses, side effects, and more. 
-          Try asking about common medications like aspirin, lisinopril, metformin, atorvastatin, or amoxicillin.
-        </p>
-        <MedicationChatbot />
-      </div>
-
       <Tabs defaultValue="medication-verification" className="w-full">
         <TabsList className="mb-10 flex flex-wrap justify-center bg-transparent gap-3">
           {services.map((service) => (
@@ -211,6 +202,8 @@ export default function ServicesPage() {
           </TabsContent>
         ))}
       </Tabs>
+
+      <MedicationChatbot />
     </div>
   );
 }

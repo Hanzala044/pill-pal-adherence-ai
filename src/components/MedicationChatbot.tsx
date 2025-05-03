@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Bot, User, Send, Pill, AlertCircle } from 'lucide-react';
+import { Bot, User, Send, Pill, AlertCircle, Minimize, X, MessageSquare } from 'lucide-react';
 
 type Message = {
   role: 'user' | 'bot';
@@ -22,7 +22,10 @@ export default function MedicationChatbot() {
   
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [position, setPosition] = useState({ x: 'auto', y: 'auto' });
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     scrollToBottom();
@@ -30,6 +33,10 @@ export default function MedicationChatbot() {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const toggleChat = () => {
+    setIsOpen(!isOpen);
   };
 
   const handleSend = async (e: React.FormEvent) => {
@@ -90,69 +97,98 @@ export default function MedicationChatbot() {
     }, 1000);
   };
 
+  if (!isOpen) {
+    return (
+      <div className="fixed bottom-5 right-5 z-50">
+        <button
+          onClick={toggleChat}
+          className="bg-gradient-to-r from-purple-600 to-pink-500 rounded-full p-4 text-white shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center"
+          aria-label="Open medication chat"
+        >
+          <MessageSquare className="h-6 w-6" />
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col h-[400px] md:h-[500px]">
-      <div className="bg-gradient-to-r from-purple-600 to-pink-500 p-3 rounded-t-lg flex items-center gap-2">
-        <Bot className="h-5 w-5 text-white" />
-        <h3 className="font-medium text-white">MediBot - Medication Information Assistant</h3>
-      </div>
-      
-      <div className="flex-1 overflow-y-auto p-4 bg-gradient-to-b from-background to-background/90 border-x border-border">
-        <div className="space-y-4">
-          {messages.map((msg, index) => (
-            <div 
-              key={index} 
-              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+    <div className="fixed bottom-5 right-5 z-50 shadow-xl">
+      <div 
+        className="flex flex-col h-[400px] md:h-[500px] w-[320px] md:w-[380px] rounded-lg overflow-hidden"
+        style={{ 
+          boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+        }}
+      >
+        <div 
+          ref={dragRef}
+          className="bg-gradient-to-r from-purple-600 to-pink-500 p-3 rounded-t-lg flex items-center justify-between cursor-move"
+        >
+          <div className="flex items-center gap-2">
+            <Bot className="h-5 w-5 text-white" />
+            <h3 className="font-medium text-white">MediBot</h3>
+          </div>
+          <div className="flex gap-2">
+            <button 
+              onClick={toggleChat} 
+              className="text-white/80 hover:text-white transition-colors p-1 rounded"
             >
-              <div 
-                className={`flex gap-2 max-w-[80%] ${
-                  msg.role === 'user' 
-                    ? 'bg-primary/10 rounded-l-lg rounded-br-lg' 
-                    : 'bg-primary/5 rounded-r-lg rounded-bl-lg'
-                } p-3`}
-              >
-                <div className="flex-shrink-0 h-8 w-8 bg-gradient-to-tr from-primary/10 to-secondary/10 rounded-full flex items-center justify-center">
-                  {msg.role === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
-                </div>
-                <div>
-                  <div className="font-medium text-xs text-muted-foreground">
-                    {msg.role === 'user' ? 'You' : 'MediBot'} • {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </div>
-                  <p className="text-sm mt-1">{msg.content}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-          {isTyping && (
-            <div className="flex justify-start">
-              <div className="bg-primary/5 rounded-lg p-3 max-w-[80%]">
-                <div className="flex space-x-1 items-center">
-                  <div className="h-2 w-2 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                  <div className="h-2 w-2 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                  <div className="h-2 w-2 bg-primary rounded-full animate-bounce"></div>
-                </div>
-              </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
+              <X className="h-4 w-4" />
+            </button>
+          </div>
         </div>
-      </div>
-      
-      <form onSubmit={handleSend} className="p-2 border border-t-0 rounded-b-lg flex gap-2">
-        <Input 
-          value={input} 
-          onChange={(e) => setInput(e.target.value)} 
-          placeholder="Ask about any medication..." 
-          className="flex-1"
-        />
-        <Button type="submit" size="icon">
-          <Send className="h-4 w-4" />
-        </Button>
-      </form>
-      
-      <div className="mt-3 px-2 flex items-center gap-2 text-xs text-muted-foreground">
-        <AlertCircle className="h-3 w-3" />
-        <p>This is a demo with limited medication information. In a real application, this would connect to a comprehensive medication database.</p>
+        
+        <div className="flex-1 overflow-y-auto p-4 bg-gradient-to-b from-background to-background/90 border-x border-border">
+          <div className="space-y-4">
+            {messages.map((msg, index) => (
+              <div 
+                key={index} 
+                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div 
+                  className={`flex gap-2 max-w-[80%] ${
+                    msg.role === 'user' 
+                      ? 'bg-primary/10 rounded-l-lg rounded-br-lg' 
+                      : 'bg-primary/5 rounded-r-lg rounded-bl-lg'
+                  } p-3`}
+                >
+                  <div className="flex-shrink-0 h-8 w-8 bg-gradient-to-tr from-primary/10 to-secondary/10 rounded-full flex items-center justify-center">
+                    {msg.role === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
+                  </div>
+                  <div>
+                    <div className="font-medium text-xs text-muted-foreground">
+                      {msg.role === 'user' ? 'You' : 'MediBot'} • {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                    <p className="text-sm mt-1">{msg.content}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="bg-primary/5 rounded-lg p-3 max-w-[80%]">
+                  <div className="flex space-x-1 items-center">
+                    <div className="h-2 w-2 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                    <div className="h-2 w-2 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                    <div className="h-2 w-2 bg-primary rounded-full animate-bounce"></div>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+        </div>
+        
+        <form onSubmit={handleSend} className="p-2 border border-t-0 rounded-b-lg flex gap-2">
+          <Input 
+            value={input} 
+            onChange={(e) => setInput(e.target.value)} 
+            placeholder="Ask about any medication..." 
+            className="flex-1"
+          />
+          <Button type="submit" size="icon">
+            <Send className="h-4 w-4" />
+          </Button>
+        </form>
       </div>
     </div>
   );
