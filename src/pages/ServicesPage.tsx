@@ -1,8 +1,8 @@
-
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/shared';
 import { PillIcon, Camera, Bell, Calendar, Share2, FileText, BookOpen, AlertTriangle, ShoppingBag } from 'lucide-react';
+import MedicationChatbot from '@/components/MedicationChatbot';
 
 export default function ServicesPage() {
   const services = [
@@ -155,28 +155,12 @@ export default function ServicesPage() {
       </div>
 
       <div className="bg-primary/5 p-6 rounded-xl mb-8">
-        <h2 className="text-xl font-semibold mb-4 gradient-text">How PillPal Works</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white/40 p-4 rounded-lg shadow-sm">
-            <h3 className="font-medium text-lg mb-2">1. Add Your Medications</h3>
-            <p className="text-muted-foreground">
-              Input your prescription details or scan medication labels to create your personalized 
-              medication profile.
-            </p>
-          </div>
-          <div className="bg-white/40 p-4 rounded-lg shadow-sm">
-            <h3 className="font-medium text-lg mb-2">2. Set Up Reminders</h3>
-            <p className="text-muted-foreground">
-              Configure smart notifications based on your medication schedule and personal preferences.
-            </p>
-          </div>
-          <div className="bg-white/40 p-4 rounded-lg shadow-sm">
-            <h3 className="font-medium text-lg mb-2">3. Track & Improve</h3>
-            <p className="text-muted-foreground">
-              Monitor your adherence over time with detailed analytics and share progress with healthcare providers.
-            </p>
-          </div>
-        </div>
+        <h2 className="text-xl font-semibold mb-4 gradient-text">Medication Information Assistant</h2>
+        <p className="text-muted-foreground mb-6">
+          Our AI-powered assistant can answer your questions about medications, their uses, side effects, and more. 
+          Try asking about common medications like aspirin, lisinopril, metformin, atorvastatin, or amoxicillin.
+        </p>
+        <MedicationChatbot />
       </div>
 
       <Tabs defaultValue="medication-verification" className="w-full">
