@@ -3,7 +3,7 @@ import React from 'react';
 import Header from './Header';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Home, Camera, PillIcon, Calendar } from 'lucide-react';
+import { Home, Camera, PillIcon, Calendar, Info, Settings } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import AnimatedBackground from './AnimatedBackground';
 
@@ -16,6 +16,8 @@ export default function Layout() {
     { name: 'Take Medication', href: '/camera', icon: Camera },
     { name: 'Medications', href: '/medications', icon: PillIcon },
     { name: 'History', href: '/history', icon: Calendar },
+    { name: 'About Us', href: '/about', icon: Info },
+    { name: 'Services', href: '/services', icon: Settings },
   ];
 
   return (
@@ -56,7 +58,7 @@ export default function Layout() {
         {isMobile && (
           <nav className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-[#1a1a1a] to-[#2d1f3d] border-t border-[#8B5CF6]/20 backdrop-blur-sm p-2">
             <div className="flex justify-around items-center">
-              {navigation.map((item) => {
+              {navigation.slice(0, 4).map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.href;
                 return (

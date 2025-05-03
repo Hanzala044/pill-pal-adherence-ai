@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Bell, TestTube, Beaker } from 'lucide-react';
+import { Search, Bell, TestTube, Beaker, Info, Settings } from 'lucide-react';
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, 
   DropdownMenuSeparator, DropdownMenuTrigger, Avatar, AvatarFallback, AvatarImage, Input } from '@/components/ui/shared';
 import { useToast } from '@/hooks/use-toast';
@@ -52,8 +52,8 @@ export default function Header() {
 
   const navigationItems = [
     { name: 'Home', path: '/' },
-    { name: 'About Us', path: '/about' },
-    { name: 'Services', path: '/medications' },
+    { name: 'About Us', path: '/about', icon: Info },
+    { name: 'Services', path: '/services', icon: Settings },
     { name: 'Contact', path: '/contact' },
   ];
   
@@ -102,8 +102,9 @@ export default function Header() {
                   <li key={item.name}>
                     <a
                       href={item.path}
-                      className="text-white/80 hover:text-white transition-colors duration-200"
+                      className="text-white/80 hover:text-white transition-colors duration-200 flex items-center gap-1"
                     >
+                      {item.icon && <item.icon className="h-4 w-4" />}
                       {item.name}
                     </a>
                   </li>
