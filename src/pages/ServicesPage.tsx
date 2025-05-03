@@ -145,19 +145,47 @@ export default function ServicesPage() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="text-center mb-8">
+    <div className="space-y-10">
+      <div className="text-center mb-10">
         <h1 className="text-3xl font-bold gradient-text">Our Services</h1>
-        <p className="text-muted-foreground mt-2">Comprehensive medication management solutions to improve your health</p>
+        <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">
+          PillPal is designed to revolutionize how you manage your medications. Our comprehensive 
+          suite of features ensures you take the right medication at the right time, every time.
+        </p>
+      </div>
+
+      <div className="bg-primary/5 p-6 rounded-xl mb-8">
+        <h2 className="text-xl font-semibold mb-4 gradient-text">How PillPal Works</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white/40 p-4 rounded-lg shadow-sm">
+            <h3 className="font-medium text-lg mb-2">1. Add Your Medications</h3>
+            <p className="text-muted-foreground">
+              Input your prescription details or scan medication labels to create your personalized 
+              medication profile.
+            </p>
+          </div>
+          <div className="bg-white/40 p-4 rounded-lg shadow-sm">
+            <h3 className="font-medium text-lg mb-2">2. Set Up Reminders</h3>
+            <p className="text-muted-foreground">
+              Configure smart notifications based on your medication schedule and personal preferences.
+            </p>
+          </div>
+          <div className="bg-white/40 p-4 rounded-lg shadow-sm">
+            <h3 className="font-medium text-lg mb-2">3. Track & Improve</h3>
+            <p className="text-muted-foreground">
+              Monitor your adherence over time with detailed analytics and share progress with healthcare providers.
+            </p>
+          </div>
+        </div>
       </div>
 
       <Tabs defaultValue="medication-verification" className="w-full">
-        <TabsList className="mb-6 flex flex-wrap justify-center bg-transparent gap-2">
+        <TabsList className="mb-10 flex flex-wrap justify-center bg-transparent gap-3">
           {services.map((service) => (
             <TabsTrigger 
               key={service.id} 
               value={service.id}
-              className="data-[state=active]:gradient-button px-4 py-2 rounded-full"
+              className="data-[state=active]:gradient-button px-5 py-2.5 rounded-full transition-all duration-300"
             >
               {service.title}
             </TabsTrigger>
@@ -165,7 +193,7 @@ export default function ServicesPage() {
         </TabsList>
 
         {services.map((service) => (
-          <TabsContent key={service.id} value={service.id}>
+          <TabsContent key={service.id} value={service.id} className="space-y-8">
             <Card className="gradient-card">
               <CardHeader className="flex flex-row items-center gap-4">
                 <div className="bg-primary/10 p-3 rounded-full">
@@ -177,20 +205,20 @@ export default function ServicesPage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-base">{service.details}</p>
+                <p className="text-base leading-relaxed">{service.details}</p>
               </CardContent>
             </Card>
 
-            <div className="mt-6">
-              <h3 className="text-lg font-medium mb-2">How It Works</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="mt-8">
+              <h3 className="text-lg font-medium mb-4">How It Works</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {service.steps.map((step, index) => (
                   <Card key={index} className="gradient-card">
                     <CardHeader>
                       <CardTitle className="text-lg">{step.title}</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <p>{step.description}</p>
+                      <p className="leading-relaxed">{step.description}</p>
                     </CardContent>
                   </Card>
                 ))}
