@@ -15,7 +15,7 @@ export default function MedicationChatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'bot',
-      content: 'Hello! I'm MediBot, your medication assistant. Ask me about any medication, its uses, side effects, or interactions.',
+      content: "Hello! I'm MediBot, your medication assistant. Ask me about any medication, its uses, side effects, or interactions.",
       timestamp: new Date(),
     },
   ]);
@@ -51,11 +51,11 @@ export default function MedicationChatbot() {
     // Simulate AI response (in a real app, this would call an API)
     setTimeout(() => {
       const mockResponses: Record<string, string> = {
-        'aspirin': 'Aspirin is a nonsteroidal anti-inflammatory drug (NSAID) used to relieve pain, reduce inflammation, and lower fever. It's commonly used to treat headaches, muscle pain, and arthritis. Side effects may include stomach upset, heartburn, and increased risk of bleeding.',
-        'lisinopril': 'Lisinopril is an ACE inhibitor used to treat high blood pressure and heart failure. It works by relaxing blood vessels. Side effects may include dry cough, dizziness, and in rare cases, angioedema.',
-        'metformin': 'Metformin is the first-line medication for the treatment of type 2 diabetes. It works by decreasing glucose production in the liver and increasing insulin sensitivity. Common side effects include gastrointestinal issues like nausea and diarrhea.',
-        'atorvastatin': 'Atorvastatin (Lipitor) is a statin used to lower cholesterol levels and reduce the risk of heart disease. Side effects may include muscle pain, liver problems, and slightly increased risk of diabetes.',
-        'amoxicillin': 'Amoxicillin is a penicillin antibiotic used to treat bacterial infections. It works by stopping the growth of bacteria. Side effects may include diarrhea, rash, and nausea. Allergic reactions can occur in some people.',
+        'aspirin': "Aspirin is a nonsteroidal anti-inflammatory drug (NSAID) used to relieve pain, reduce inflammation, and lower fever. It's commonly used to treat headaches, muscle pain, and arthritis. Side effects may include stomach upset, heartburn, and increased risk of bleeding.",
+        'lisinopril': "Lisinopril is an ACE inhibitor used to treat high blood pressure and heart failure. It works by relaxing blood vessels. Side effects may include dry cough, dizziness, and in rare cases, angioedema.",
+        'metformin': "Metformin is the first-line medication for the treatment of type 2 diabetes. It works by decreasing glucose production in the liver and increasing insulin sensitivity. Common side effects include gastrointestinal issues like nausea and diarrhea.",
+        'atorvastatin': "Atorvastatin (Lipitor) is a statin used to lower cholesterol levels and reduce the risk of heart disease. Side effects may include muscle pain, liver problems, and slightly increased risk of diabetes.",
+        'amoxicillin': "Amoxicillin is a penicillin antibiotic used to treat bacterial infections. It works by stopping the growth of bacteria. Side effects may include diarrhea, rash, and nausea. Allergic reactions can occur in some people.",
       };
       
       let botResponse = '';
@@ -71,11 +71,11 @@ export default function MedicationChatbot() {
       // If no specific medication was found
       if (!botResponse) {
         if (query.includes('side effect')) {
-          botResponse = 'Many medications can have side effects. Common ones include nausea, dizziness, headache, and fatigue. It\'s important to discuss any side effects with your healthcare provider.';
+          botResponse = "Many medications can have side effects. Common ones include nausea, dizziness, headache, and fatigue. It's important to discuss any side effects with your healthcare provider.";
         } else if (query.includes('interaction')) {
-          botResponse = 'Drug interactions can occur when two or more medications affect each other's activity. Always inform your doctor about all medications you're taking, including over-the-counter drugs and supplements.';
+          botResponse = "Drug interactions can occur when two or more medications affect each other's activity. Always inform your doctor about all medications you're taking, including over-the-counter drugs and supplements.";
         } else {
-          botResponse = 'I can provide information about common medications like aspirin, lisinopril, metformin, atorvastatin, and amoxicillin. Please specify which medication you\'d like to learn about.';
+          botResponse = "I can provide information about common medications like aspirin, lisinopril, metformin, atorvastatin, and amoxicillin. Please specify which medication you'd like to learn about.";
         }
       }
       
