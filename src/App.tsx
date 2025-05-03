@@ -13,6 +13,7 @@ import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
 import AboutPage from "./pages/AboutPage";
 import ServicesPage from "./pages/ServicesPage";
+import ContactPage from "./pages/ContactPage";
 import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
 import SplashScreen from "./components/SplashScreen";
@@ -49,6 +50,7 @@ const App = () => {
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/services" element={<ServicesPage />} />
+                <Route path="/contact" element={<ContactPage />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

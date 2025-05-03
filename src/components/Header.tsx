@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { Search, Bell, TestTube, Beaker, Info, Settings } from 'lucide-react';
+import { Search, Bell, TestTube, Beaker, Info, Settings, Phone } from 'lucide-react';
 import { Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, 
   DropdownMenuSeparator, DropdownMenuTrigger, Avatar, AvatarFallback, AvatarImage, Input } from '@/components/ui/shared';
 import { useToast } from '@/hooks/use-toast';
@@ -54,7 +55,7 @@ export default function Header() {
     { name: 'Home', path: '/' },
     { name: 'About Us', path: '/about', icon: Info },
     { name: 'Services', path: '/services', icon: Settings },
-    { name: 'Contact', path: '/contact' },
+    { name: 'Contact', path: '/contact', icon: Phone },
   ];
   
   return (

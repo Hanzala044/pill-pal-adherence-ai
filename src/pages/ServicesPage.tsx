@@ -11,56 +11,136 @@ export default function ServicesPage() {
       title: "Medication Verification",
       icon: <Camera className="h-6 w-6 text-primary" />,
       description: "Our advanced computer vision system verifies that you're taking the right medication at the right time.",
-      details: "Using your device's camera, PillPal can identify pills by their shape, color, and markings. Simply hold the pill in front of your camera, and our AI will verify it against your prescription information. This helps prevent medication errors and gives you peace of mind knowing you're taking the correct medication."
+      details: "Using your device's camera, PillPal can identify pills by their shape, color, and markings. Simply hold the pill in front of your camera, and our AI will verify it against your prescription information. This helps prevent medication errors and gives you peace of mind knowing you're taking the correct medication.",
+      steps: [
+        {
+          title: "Step 1: Take a photo of your medication",
+          description: "Open the app camera and position your medication in the frame. Make sure there's good lighting so the camera can clearly see the pill's details."
+        },
+        {
+          title: "Step 2: Get instant verification",
+          description: "Our AI will analyze the image and confirm whether the medication matches your prescription. The system provides immediate feedback and logs the successful verification."
+        }
+      ]
     },
     {
       id: "smart-reminders",
       title: "Smart Reminders",
       icon: <Bell className="h-6 w-6 text-primary" />,
       description: "Never miss a dose with our customizable reminder system that adapts to your schedule.",
-      details: "Set up personalized reminders based on your medication schedule. PillPal sends notifications exactly when you need to take your medications, and can even adjust based on your daily routine. The app intelligently adapts if you're traveling across time zones or if your schedule changes."
+      details: "Set up personalized reminders based on your medication schedule. PillPal sends notifications exactly when you need to take your medications, and can even adjust based on your daily routine. The app intelligently adapts if you're traveling across time zones or if your schedule changes.",
+      steps: [
+        {
+          title: "Step 1: Set up your medication schedule",
+          description: "Add your medications with specific dosing times, frequency, and any special instructions. Our system will create a personalized reminder schedule."
+        },
+        {
+          title: "Step 2: Receive and respond to notifications",
+          description: "Get timely reminders on your device. With a single tap, you can mark the dose as taken, snooze the reminder, or record why you skipped a dose for better tracking."
+        }
+      ]
     },
     {
       id: "adherence-tracking",
       title: "Adherence Tracking",
       icon: <Calendar className="h-6 w-6 text-primary" />,
       description: "Comprehensive history tracking helps you monitor your medication adherence over time.",
-      details: "View detailed reports on your medication adherence with easy-to-understand visualizations. Track patterns, identify missed doses, and see how your adherence improves over time. These insights help you and your healthcare provider make informed decisions about your treatment plan."
+      details: "View detailed reports on your medication adherence with easy-to-understand visualizations. Track patterns, identify missed doses, and see how your adherence improves over time. These insights help you and your healthcare provider make informed decisions about your treatment plan.",
+      steps: [
+        {
+          title: "Step 1: Record your medication activity",
+          description: "Each time you take or miss a medication, the app records this information in your personal health timeline, building a comprehensive history."
+        },
+        {
+          title: "Step 2: Review your adherence analytics",
+          description: "Access visual reports showing your adherence patterns over days, weeks, and months. Identify trends and share these insights with your healthcare provider."
+        }
+      ]
     },
     {
       id: "healthcare-sharing",
       title: "Healthcare Sharing",
       icon: <Share2 className="h-6 w-6 text-primary" />,
       description: "Securely share your medication history with healthcare providers for better coordinated care.",
-      details: "Generate comprehensive medication adherence reports that can be shared with your doctors, pharmacists, or caregivers. This feature facilitates better communication with your healthcare team and enables them to provide more personalized care based on your actual medication usage."
+      details: "Generate comprehensive medication adherence reports that can be shared with your doctors, pharmacists, or caregivers. This feature facilitates better communication with your healthcare team and enables them to provide more personalized care based on your actual medication usage.",
+      steps: [
+        {
+          title: "Step 1: Generate a shareable report",
+          description: "Select the date range and medications you want to include in your report. The app creates a comprehensive summary of your medication history."
+        },
+        {
+          title: "Step 2: Share securely with healthcare providers",
+          description: "Send the report directly to your doctor via secure link, email, or generate a QR code they can scan during your appointment for immediate access."
+        }
+      ]
     },
     {
       id: "prescription-management",
       title: "Prescription Management",
       icon: <FileText className="h-6 w-6 text-primary" />,
       description: "Digitally manage all your prescriptions in one secure place.",
-      details: "Store all your prescription information in one secure location. The app maintains a complete list of your current and past medications, including dosage instructions, prescribing doctors, and pharmacy information. PillPal also helps you keep track of refill dates and sends timely reminders when you're running low."
+      details: "Store all your prescription information in one secure location. The app maintains a complete list of your current and past medications, including dosage instructions, prescribing doctors, and pharmacy information. PillPal also helps you keep track of refill dates and sends timely reminders when you're running low.",
+      steps: [
+        {
+          title: "Step 1: Add your prescriptions",
+          description: "Scan prescription labels or manually enter medication details. The system stores all your current and past medications with complete dosage information."
+        },
+        {
+          title: "Step 2: Manage your medication schedule",
+          description: "Organize your prescriptions by time, condition, or doctor. Keep track of refill dates and expiration information all in one centralized dashboard."
+        }
+      ]
     },
     {
       id: "medication-education",
       title: "Medication Education",
       icon: <BookOpen className="h-6 w-6 text-primary" />,
       description: "Access reliable information about your medications directly within the app.",
-      details: "For each medication in your profile, PillPal provides detailed information about proper usage, potential side effects, and important precautions. Our database is regularly updated with the latest medical information to ensure you have access to accurate and relevant details about your treatments."
+      details: "For each medication in your profile, PillPal provides detailed information about proper usage, potential side effects, and important precautions. Our database is regularly updated with the latest medical information to ensure you have access to accurate and relevant details about your treatments.",
+      steps: [
+        {
+          title: "Step 1: Select a medication to learn about",
+          description: "Tap on any medication in your list to access a comprehensive information page that includes drug facts, usage guidelines, and potential side effects."
+        },
+        {
+          title: "Step 2: Explore detailed educational resources",
+          description: "Read expert-verified content about your medication, including interactive guides, videos, and FAQs to help you better understand your treatment."
+        }
+      ]
     },
     {
       id: "interaction-alerts",
       title: "Interaction Alerts",
       icon: <AlertTriangle className="h-6 w-6 text-primary" />,
       description: "Receive warnings about potential drug interactions between your medications.",
-      details: "PillPal's safety system checks for potential harmful interactions between your medications, including prescription drugs, over-the-counter medications, and supplements. The app alerts you to possible risks and suggests discussing these with your healthcare provider to ensure your medication regimen is safe."
+      details: "PillPal's safety system checks for potential harmful interactions between your medications, including prescription drugs, over-the-counter medications, and supplements. The app alerts you to possible risks and suggests discussing these with your healthcare provider to ensure your medication regimen is safe.",
+      steps: [
+        {
+          title: "Step 1: Add all your medications",
+          description: "Include all prescription drugs, over-the-counter medications, and supplements in your profile to enable comprehensive interaction checking."
+        },
+        {
+          title: "Step 2: Review interaction alerts",
+          description: "Receive immediate notifications if potentially harmful drug interactions are detected. Each alert includes detailed information about the nature of the interaction and recommended actions."
+        }
+      ]
     },
     {
       id: "refill-management",
       title: "Refill Management",
       icon: <ShoppingBag className="h-6 w-6 text-primary" />,
       description: "Get timely reminders for prescription refills and simplify the reordering process.",
-      details: "PillPal tracks your medication supply based on your dosage schedule and sends notifications when it's time for a refill. For added convenience, the app can connect with participating pharmacies to streamline the refill process, saving you time and ensuring you never run out of important medications."
+      details: "PillPal tracks your medication supply based on your dosage schedule and sends notifications when it's time for a refill. For added convenience, the app can connect with participating pharmacies to streamline the refill process, saving you time and ensuring you never run out of important medications.",
+      steps: [
+        {
+          title: "Step 1: Set up refill tracking",
+          description: "Enter the number of pills in your current supply and your dosing schedule. The app automatically calculates when you'll need a refill and sends timely reminders."
+        },
+        {
+          title: "Step 2: Request refills efficiently",
+          description: "When it's time for a refill, use the app to contact your pharmacy directly or set up automatic refill requests with participating pharmacies for seamless medication management."
+        }
+      ]
     }
   ];
 
@@ -103,36 +183,18 @@ export default function ServicesPage() {
 
             <div className="mt-6">
               <h3 className="text-lg font-medium mb-2">How It Works</h3>
-              <Card className="gradient-card">
-                <CardContent className="pt-6">
-                  <p className="text-base">
-                    {service.id === "medication-verification" && (
-                      "Our AI-powered system uses computer vision to recognize pills by their unique characteristics. Just tap the camera icon, position your medication in the frame, and let PillPal confirm it's the right medication at the right time."
-                    )}
-                    {service.id === "smart-reminders" && (
-                      "Start by setting up your medication schedule in the app. PillPal will send notifications when it's time to take your medication. Snooze or mark the dose as taken directly from the notification. The app learns from your behavior to optimize reminder timing."
-                    )}
-                    {service.id === "adherence-tracking" && (
-                      "Each time you take or miss a medication, PillPal records this in your history. View your adherence trends through intuitive charts and graphs. The app also calculates an adherence score to help you understand how well you're following your prescribed regimen."
-                    )}
-                    {service.id === "healthcare-sharing" && (
-                      "Generate a secure, shareable report of your medication history with just a few taps. Choose exactly what information to include and share it via secure link, email, or by displaying a QR code that your healthcare provider can scan during your visit."
-                    )}
-                    {service.id === "prescription-management" && (
-                      "Add prescriptions by scanning the label with your camera or entering the details manually. The app organizes all your medications, including dosage instructions and refill information, in one convenient dashboard that you can access anytime."
-                    )}
-                    {service.id === "medication-education" && (
-                      "Tap on any medication in your list to access comprehensive information about it. PillPal provides details on proper usage, common side effects, and important precautions, all written in easy-to-understand language."
-                    )}
-                    {service.id === "interaction-alerts" && (
-                      "When you add a new medication to your profile, PillPal automatically checks for potential interactions with your existing medications. If a risk is detected, you'll receive an alert with information about the nature of the interaction."
-                    )}
-                    {service.id === "refill-management" && (
-                      "Based on your dosage and supply information, PillPal calculates when you'll need a refill and sends a reminder in advance. For participating pharmacies, you can request a refill directly through the app with just a few taps."
-                    )}
-                  </p>
-                </CardContent>
-              </Card>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {service.steps.map((step, index) => (
+                  <Card key={index} className="gradient-card">
+                    <CardHeader>
+                      <CardTitle className="text-lg">{step.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p>{step.description}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
           </TabsContent>
         ))}
