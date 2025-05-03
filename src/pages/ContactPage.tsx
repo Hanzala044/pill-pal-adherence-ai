@@ -80,20 +80,19 @@ export default function ContactPage() {
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </Card>
       
-    <Card className="gradient-card overflow-hidden border-none mt-8">
-      <CardContent className="p-6">
-        <h3 className="text-xl font-semibold mb-4 gradient-text">Send a Message</h3>
-        <p className="mb-4 text-muted-foreground">
-          Have questions about PillPal or need support? Feel free to reach out directly through any of the contact methods above.
-        </p>
-        <p className="text-muted-foreground">
-          I'm always open to discussing new projects, opportunities and partnerships.
-        </p>
-      </CardContent>
-    </Card>
-  </div>
+      <Card className="gradient-card overflow-hidden border-none mt-8">
+        <CardContent className="p-6">
+          <h3 className="text-xl font-semibold mb-4 gradient-text">Send a Message</h3>
+          <p className="mb-4 text-muted-foreground">
+            Have questions about PillPal or need support? Feel free to reach out directly through any of the contact methods above.
+          </p>
+          <p className="text-muted-foreground">
+            I'm always open to discussing new projects, opportunities and partnerships.
+          </p>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
