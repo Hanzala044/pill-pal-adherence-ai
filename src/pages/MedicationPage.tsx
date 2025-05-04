@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -83,7 +82,7 @@ const MedicationPage = () => {
         } else {
           // If no data in the database yet, use mock data for demo purposes
           console.log('No data in database, using mock data');
-          setMedications(mockMedications);
+          setMedications(mockMedications as Medication[]);
         }
       } catch (error) {
         console.error('Error fetching medications:', error);
@@ -94,7 +93,7 @@ const MedicationPage = () => {
         });
         
         // Fall back to mock data on error
-        setMedications(mockMedications);
+        setMedications(mockMedications as Medication[]);
       } finally {
         setLoading(false);
       }

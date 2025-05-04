@@ -8,6 +8,8 @@ export interface Medication {
   instructions: string;
   lastTaken?: string;
   nextDose: string;
+  is_active: boolean;
+  color: string;
 }
 
 export interface AdherenceRecord {
@@ -30,7 +32,9 @@ export const mockMedications: Medication[] = [
     image: '/placeholder.svg',
     instructions: 'Take with food in the morning',
     lastTaken: '2025-04-24T08:30:00',
-    nextDose: '2025-04-25T08:00:00'
+    nextDose: '2025-04-25T08:00:00',
+    is_active: true,
+    color: 'purple'
   },
   {
     id: '2',
@@ -40,7 +44,9 @@ export const mockMedications: Medication[] = [
     image: '/placeholder.svg',
     instructions: 'Take with morning and evening meals',
     lastTaken: '2025-04-24T18:15:00',
-    nextDose: '2025-04-25T08:00:00'
+    nextDose: '2025-04-25T08:00:00',
+    is_active: true,
+    color: 'blue'
   },
   {
     id: '3',
@@ -49,7 +55,9 @@ export const mockMedications: Medication[] = [
     schedule: 'Once daily',
     image: '/placeholder.svg',
     instructions: 'Take in the evening',
-    nextDose: '2025-04-24T20:00:00'
+    nextDose: '2025-04-24T20:00:00',
+    is_active: true,
+    color: 'green'
   },
   {
     id: '4',
@@ -59,7 +67,9 @@ export const mockMedications: Medication[] = [
     image: '/placeholder.svg',
     instructions: 'Take with food',
     lastTaken: '2025-04-24T08:30:00',
-    nextDose: '2025-04-25T08:00:00'
+    nextDose: '2025-04-25T08:00:00',
+    is_active: true,
+    color: 'orange'
   }
 ];
 
