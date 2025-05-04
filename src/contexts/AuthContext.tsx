@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -15,69 +14,59 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Create a mock user for development
+const mockUser = {
+  id: "mock-user-id",
+  aud: "authenticated",
+  role: "authenticated",
+  email: "dev@example.com",
+  app_metadata: {},
+  user_metadata: { full_name: "Development User" },
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+} as User;
+
+// Create a mock session for development
+const mockSession = {
+  access_token: "mock-access-token",
+  refresh_token: "mock-refresh-token",
+  expires_in: 3600,
+  expires_at: 9999999999,
+  token_type: "bearer",
+  user: mockUser,
+} as Session;
+
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(mockUser);
+  const [session, setSession] = useState<Session | null>(mockSession);
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, currentSession) => {
-        console.log('Auth state change event:', event);
-        setSession(currentSession);
-        setUser(currentSession?.user ?? null);
-        
-        if (event === 'SIGNED_IN') {
-          toast({
-            title: "Signed in successfully",
-            description: "Welcome back to PillPal!",
-          });
-        } else if (event === 'SIGNED_OUT') {
-          toast({
-            title: "Signed out",
-            description: "You have been signed out.",
-          });
-        }
-      }
-    );
-
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      setSession(currentSession);
-      setUser(currentSession?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [toast]);
+  // Since we're bypassing auth, we don't need the real auth state listener
+  // but we'll keep empty implementations of the functions for compatibility
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+    toast({
+      title: "Authentication disabled",
+      description: "Login functionality is disabled. Using development user.",
     });
-    return { error };
+    return { error: null };
   };
 
   const signUp = async (email: string, password: string, name: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: name,
-        },
-      }
+    toast({
+      title: "Authentication disabled",
+      description: "Signup functionality is disabled. Using development user.",
     });
-    return { error };
+    return { error: null };
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    toast({
+      title: "Authentication disabled",
+      description: "Logout functionality is disabled.",
+    });
+    // We don't actually sign out in dev mode
   };
 
   return (

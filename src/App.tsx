@@ -22,18 +22,9 @@ import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
 const queryClient = new QueryClient();
 
-// Protected route component
+// Modified protected route component that always allows access
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useAuth();
-  
-  if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
-  }
-  
-  if (!user) {
-    return <Navigate to="/auth" />;
-  }
-  
+  // Always allow access by returning children directly
   return <>{children}</>;
 };
 
@@ -54,12 +45,9 @@ const AppRoutes = () => {
         <SplashScreen onFinished={() => setShowSplash(false)} />
       ) : (
         <Routes>
-          <Route path="/auth" element={<AuthPage />} />
-          <Route element={
-            <ProtectedRoute>
-              <Layout />
-            </ProtectedRoute>
-          }>
+          {/* Redirect /auth to home page since we're bypassing authentication */}
+          <Route path="/auth" element={<Navigate to="/" />} />
+          <Route element={<Layout />}>
             <Route path="/" element={<Index />} />
             <Route path="/camera" element={<CameraPage />} />
             <Route path="/medications" element={<MedicationPage />} />
