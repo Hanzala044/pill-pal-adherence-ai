@@ -3,53 +3,56 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CheckCircle, AlertTriangle, Clock } from 'lucide-react';
-import { mockAdherenceHistory } from '@/utils/mockData';
+import { CheckCircle, AlertTriangle, Clock, Loader2 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { getAdherenceHistory } from '@/services/adherenceService';
 
 export default function AdherenceHistory() {
   const [period, setPeriod] = useState('week');
   
-  // Filter based on selected period
-  const filterRecords = () => {
-    const now = new Date();
-    let cutoffDate = new Date();
-    
-    switch (period) {
-      case 'day':
-        cutoffDate.setDate(now.getDate() - 1);
-        break;
-      case 'week':
-        cutoffDate.setDate(now.getDate() - 7);
-        break;
-      case 'month':
-        cutoffDate.setMonth(now.getMonth() - 1);
-        break;
-      default:
-        cutoffDate.setFullYear(now.getFullYear() - 100); // Show all records
-    }
-    
-    return mockAdherenceHistory.filter(record => 
-      new Date(record.timestamp) >= cutoffDate
-    );
-  };
+  let days;
+  switch (period) {
+    case 'day':
+      days = 1;
+      break;
+    case 'week':
+      days = 7;
+      break;
+    case 'month':
+      days = 30;
+      break;
+    default:
+      days = undefined; // All records
+  }
   
-  const filteredRecords = filterRecords();
+  const { data: adherenceRecords = [], isLoading } = useQuery({
+    queryKey: ['adherenceHistory', days],
+    queryFn: () => getAdherenceHistory(days),
+  });
   
   // Calculate adherence rate
-  const takenCount = filteredRecords.filter(record => record.status === 'taken').length;
-  const missedCount = filteredRecords.filter(record => record.status === 'missed').length;
-  const skippedCount = filteredRecords.filter(record => record.status === 'skipped').length;
-  const adherenceRate = Math.round((takenCount / filteredRecords.length) * 100) || 0;
+  const takenCount = adherenceRecords.filter((record: any) => record.status === 'taken').length;
+  const missedCount = adherenceRecords.filter((record: any) => record.status === 'missed').length;
+  const skippedCount = adherenceRecords.filter((record: any) => record.status === 'skipped').length;
+  const adherenceRate = adherenceRecords.length > 0 ? Math.round((takenCount / adherenceRecords.length) * 100) : 0;
   
   // Group records by date for 'all' view
-  const recordsByDate = filteredRecords.reduce((acc, record) => {
-    const date = record.timestamp.split('T')[0];
+  const recordsByDate = adherenceRecords.reduce((acc: any, record: any) => {
+    const date = new Date(record.timestamp).toISOString().split('T')[0];
     if (!acc[date]) {
       acc[date] = [];
     }
     acc[date].push(record);
     return acc;
-  }, {} as Record<string, typeof mockAdherenceHistory>);
+  }, {});
+  
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
   
   return (
     <div className="space-y-6 animate-fade-in">
@@ -123,69 +126,69 @@ export default function AdherenceHistory() {
           <Card>
             <CardContent className="p-0">
               <div className="divide-y divide-border">
-                {Object.entries(recordsByDate).map(([date, records]) => (
-                  <div key={date}>
-                    <div className="bg-muted/50 px-4 py-2 text-sm font-medium">
-                      {new Date(date).toLocaleDateString(undefined, { 
-                        weekday: 'long', 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                      })}
-                    </div>
-                    {records.map((record) => (
-                      <div key={record.id} className="flex items-center p-4">
-                        <div className="mr-4">
-                          {record.status === 'taken' ? (
-                            <div className="bg-green-100 text-green-700 p-2 rounded-full">
-                              <CheckCircle className="h-5 w-5" />
-                            </div>
-                          ) : record.status === 'missed' ? (
-                            <div className="bg-red-100 text-red-700 p-2 rounded-full">
-                              <AlertTriangle className="h-5 w-5" />
-                            </div>
-                          ) : (
-                            <div className="bg-yellow-100 text-yellow-700 p-2 rounded-full">
-                              <Clock className="h-5 w-5" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <p className="font-medium">{record.medicationName}</p>
-                          <div className="flex gap-6">
-                            <p className="text-sm text-muted-foreground">
-                              {record.status === 'taken' 
-                                ? 'Taken' 
-                                : record.status === 'missed' 
-                                  ? 'Missed' 
-                                  : 'Skipped'}
-                            </p>
-                            <div className="flex gap-2">
-                              {record.pillVerified && (
-                                <span className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">
-                                  Pill Verified
-                                </span>
-                              )}
-                              {record.userVerified && (
-                                <span className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full">
-                                  User Verified
-                                </span>
-                              )}
+                {Object.entries(recordsByDate).length > 0 ? (
+                  Object.entries(recordsByDate).map(([date, records]: [string, any]) => (
+                    <div key={date}>
+                      <div className="bg-muted/50 px-4 py-2 text-sm font-medium">
+                        {new Date(date).toLocaleDateString(undefined, { 
+                          weekday: 'long', 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric' 
+                        })}
+                      </div>
+                      {records.map((record: any) => (
+                        <div key={record.id} className="flex items-center p-4">
+                          <div className="mr-4">
+                            {record.status === 'taken' ? (
+                              <div className="bg-green-100 text-green-700 p-2 rounded-full">
+                                <CheckCircle className="h-5 w-5" />
+                              </div>
+                            ) : record.status === 'missed' ? (
+                              <div className="bg-red-100 text-red-700 p-2 rounded-full">
+                                <AlertTriangle className="h-5 w-5" />
+                              </div>
+                            ) : (
+                              <div className="bg-yellow-100 text-yellow-700 p-2 rounded-full">
+                                <Clock className="h-5 w-5" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-medium">{record.medicationName}</p>
+                            <div className="flex gap-6">
+                              <p className="text-sm text-muted-foreground">
+                                {record.status === 'taken' 
+                                  ? 'Taken' 
+                                  : record.status === 'missed' 
+                                    ? 'Missed' 
+                                    : 'Skipped'}
+                              </p>
+                              <div className="flex gap-2">
+                                {record.pillVerified && (
+                                  <span className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">
+                                    Pill Verified
+                                  </span>
+                                )}
+                                {record.userVerified && (
+                                  <span className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full">
+                                    User Verified
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
+                          <div className="text-sm text-muted-foreground">
+                            {new Date(record.timestamp).toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </div>
                         </div>
-                        <div className="text-sm text-muted-foreground">
-                          {new Date(record.timestamp).toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ))}
-                
-                {filteredRecords.length === 0 && (
+                      ))}
+                    </div>
+                  ))
+                ) : (
                   <div className="p-8 text-center">
                     <p className="text-muted-foreground">No records found for this period</p>
                   </div>
