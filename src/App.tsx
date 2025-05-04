@@ -20,7 +20,14 @@ import Layout from "./components/Layout";
 import SplashScreen from "./components/SplashScreen";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60000, // 1 minute
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 // Modified protected route component that always allows access
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
