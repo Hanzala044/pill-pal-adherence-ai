@@ -48,7 +48,11 @@ export const createMedication = async (medication: MedicationInput) => {
     ...medication,
     user_id: 'mock-user-id', // This matches our mock user ID from AuthContext
     next_dose: medication.next_dose,
-    refill_date: medication.refill_date
+    refill_date: medication.refill_date,
+    is_active: true, // Set default to active when creating
+    color: medication.color || '#9b87f5', // Default color if none provided
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
   };
 
   const { data, error } = await supabase
