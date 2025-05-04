@@ -34,12 +34,20 @@ export const getAdherenceHistory = async (days?: number) => {
 };
 
 export const recordAdherence = async (record: AdherenceInput) => {
+  // Convert property names to match the database schema
+  const dbRecord = {
+    medication_id: record.medication_id,
+    medicationname: record.medicationName, // lowercase 'name' to match DB column
+    status: record.status,
+    timestamp: record.timestamp || new Date().toISOString(),
+    pillverified: record.pillVerified, // lowercase 'verified' to match DB column
+    userverified: record.userVerified, // lowercase 'verified' to match DB column
+    notes: record.notes
+  };
+
   const { data, error } = await supabase
     .from('adherence_history')
-    .insert([{
-      ...record,
-      timestamp: record.timestamp || new Date().toISOString()
-    }])
+    .insert(dbRecord)
     .select()
     .single();
 

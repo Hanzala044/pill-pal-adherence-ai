@@ -8,9 +8,9 @@ export type MedicationInput = {
   frequency: string;
   time_of_day: string;
   instructions?: string;
-  next_dose: string | Date;
+  next_dose: string;  // Changed to string only to match Supabase schema
   color?: string;
-  refill_date?: string | Date | null;
+  refill_date?: string | null;  // Changed to string only to match Supabase schema
 };
 
 export const getMedications = async () => {
@@ -43,9 +43,20 @@ export const getMedicationById = async (id: string) => {
 };
 
 export const createMedication = async (medication: MedicationInput) => {
+  // Ensure next_dose and refill_date are strings if they are Date objects
+  const dbMedication = {
+    ...medication,
+    next_dose: medication.next_dose instanceof Date 
+      ? medication.next_dose.toISOString() 
+      : medication.next_dose,
+    refill_date: medication.refill_date instanceof Date 
+      ? medication.refill_date.toISOString() 
+      : medication.refill_date
+  };
+
   const { data, error } = await supabase
     .from('medications')
-    .insert([medication])
+    .insert([dbMedication])
     .select()
     .single();
 
@@ -58,9 +69,21 @@ export const createMedication = async (medication: MedicationInput) => {
 };
 
 export const updateMedication = async (id: string, medication: Partial<MedicationInput>) => {
+  // Ensure next_dose and refill_date are strings if they are Date objects
+  const dbMedication = {
+    ...medication,
+    updated_at: new Date().toISOString(),
+    next_dose: medication.next_dose instanceof Date 
+      ? medication.next_dose.toISOString() 
+      : medication.next_dose,
+    refill_date: medication.refill_date instanceof Date 
+      ? medication.refill_date.toISOString() 
+      : medication.refill_date
+  };
+
   const { data, error } = await supabase
     .from('medications')
-    .update({ ...medication, updated_at: new Date().toISOString() })
+    .update(dbMedication)
     .eq('id', id)
     .select()
     .single();
