@@ -18,9 +18,27 @@ interface Medication {
   dosage: string;
   schedule: string;
   instructions: string;
+  nextDose: string;
+  is_active: boolean;
+  color: string;
+  image?: string;
+}
+
+// Define the database medication type from Supabase
+interface DbMedication {
+  id: string;
+  name: string;
+  dosage: string;
+  frequency: string;
+  time_of_day: string;
+  instructions: string | null;
   next_dose: string;
   is_active: boolean;
   color: string;
+  created_at: string;
+  updated_at: string;
+  user_id: string | null;
+  refill_date: string | null;
 }
 
 const MedicationPage = () => {
@@ -31,13 +49,27 @@ const MedicationPage = () => {
   const [activeTab, setActiveTab] = useState('all');
   const { toast } = useToast();
 
+  // Map DB medication to the application's Medication type
+  const mapDbMedicationToMedication = (dbMedication: DbMedication): Medication => {
+    return {
+      id: dbMedication.id,
+      name: dbMedication.name,
+      dosage: dbMedication.dosage,
+      schedule: `${dbMedication.frequency} (${dbMedication.time_of_day})`,
+      instructions: dbMedication.instructions || '',
+      nextDose: dbMedication.next_dose,
+      is_active: dbMedication.is_active,
+      color: dbMedication.color,
+      image: '/placeholder.svg',
+    };
+  };
+
   // Fetch medications from Supabase
   useEffect(() => {
     async function fetchMedications() {
       try {
         setLoading(true);
         
-        // For development, we're using the mockData initially for testing
         let { data, error } = await supabase
           .from('medications')
           .select('*');
@@ -45,20 +77,13 @@ const MedicationPage = () => {
         if (error) throw error;
         
         if (data && data.length > 0) {
-          setMedications(data as Medication[]);
+          // Map database records to the Medication type
+          const mappedMedications = data.map(mapDbMedicationToMedication);
+          setMedications(mappedMedications);
         } else {
           // If no data in the database yet, use mock data for demo purposes
           console.log('No data in database, using mock data');
-          setMedications(mockMedications.map(med => ({
-            id: med.id,
-            name: med.name,
-            dosage: med.dosage,
-            schedule: med.schedule,
-            instructions: med.instructions || '',
-            next_dose: med.nextDose,
-            is_active: true,
-            color: 'purple'
-          })));
+          setMedications(mockMedications);
         }
       } catch (error) {
         console.error('Error fetching medications:', error);
@@ -69,16 +94,7 @@ const MedicationPage = () => {
         });
         
         // Fall back to mock data on error
-        setMedications(mockMedications.map(med => ({
-          id: med.id,
-          name: med.name,
-          dosage: med.dosage,
-          schedule: med.schedule,
-          instructions: med.instructions || '',
-          next_dose: med.nextDose,
-          is_active: true,
-          color: 'purple'
-        })));
+        setMedications(mockMedications);
       } finally {
         setLoading(false);
       }
@@ -95,6 +111,29 @@ const MedicationPage = () => {
       if (activeTab === 'inactive') return !med.is_active;
       return true; // 'all' tab
     });
+
+  // Function to refresh medications after adding new one
+  const refreshMedications = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('medications')
+        .select('*');
+      
+      if (error) throw error;
+      
+      if (data) {
+        const mappedMedications = data.map(mapDbMedicationToMedication);
+        setMedications(mappedMedications);
+      }
+    } catch (error) {
+      console.error('Error refreshing medications:', error);
+      toast({
+        title: 'Error refreshing data',
+        description: 'Unable to load the latest medications.',
+        variant: 'destructive',
+      });
+    }
+  };
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -117,13 +156,7 @@ const MedicationPage = () => {
           <AddMedicationForm 
             onSuccess={() => {
               setShowAddForm(false);
-              // Refresh medications after adding
-              supabase
-                .from('medications')
-                .select('*')
-                .then(({ data }) => {
-                  if (data) setMedications(data as Medication[]);
-                });
+              refreshMedications();
             }} 
           />
         </div>
@@ -184,7 +217,7 @@ const MedicationPage = () => {
                     dosage: medication.dosage,
                     schedule: medication.schedule,
                     instructions: medication.instructions,
-                    nextDose: medication.next_dose,
+                    nextDose: medication.nextDose,
                     image: '/placeholder.svg',
                   }} 
                   className="border-purple-200 hover:border-purple-400 transition-colors duration-300 hover:shadow-md"
@@ -228,7 +261,7 @@ const MedicationPage = () => {
                     dosage: medication.dosage,
                     schedule: medication.schedule,
                     instructions: medication.instructions,
-                    nextDose: medication.next_dose,
+                    nextDose: medication.nextDose,
                     image: '/placeholder.svg',
                   }}
                   className="border-purple-200 hover:border-purple-400 transition-colors duration-300 hover:shadow-md"
@@ -264,7 +297,7 @@ const MedicationPage = () => {
                     dosage: medication.dosage,
                     schedule: medication.schedule,
                     instructions: medication.instructions,
-                    nextDose: medication.next_dose,
+                    nextDose: medication.nextDose,
                     image: '/placeholder.svg',
                   }}
                   className="border-purple-200 hover:border-purple-400 transition-colors duration-300 hover:shadow-md"
