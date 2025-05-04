@@ -43,10 +43,12 @@ export const getMedicationById = async (id: string) => {
 };
 
 export const createMedication = async (medication: MedicationInput) => {
-  // Always include the mock user_id for our development user
+  // Generate a proper UUID for the mock user instead of using a string
+  const mockUserId = '00000000-0000-0000-0000-000000000000'; // Valid UUID format
+  
   const dbMedication = {
     ...medication,
-    user_id: 'mock-user-id', // This matches our mock user ID from AuthContext
+    user_id: mockUserId, // Use the valid UUID format
     next_dose: medication.next_dose,
     refill_date: medication.refill_date,
     is_active: true, // Set default to active when creating

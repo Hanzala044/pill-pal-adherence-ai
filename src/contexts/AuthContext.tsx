@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -14,9 +15,9 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Create a mock user for development
+// Create a mock user for development with a valid UUID
 const mockUser = {
-  id: "mock-user-id",
+  id: "00000000-0000-0000-0000-000000000000", // Valid UUID format
   aud: "authenticated",
   role: "authenticated",
   email: "dev@example.com",
