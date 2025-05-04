@@ -9,7 +9,125 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      adherence_history: {
+        Row: {
+          id: string
+          medication_id: string
+          medicationname: string
+          notes: string | null
+          pillverified: boolean | null
+          status: string
+          timestamp: string
+          user_id: string | null
+          userverified: boolean | null
+        }
+        Insert: {
+          id?: string
+          medication_id: string
+          medicationname: string
+          notes?: string | null
+          pillverified?: boolean | null
+          status: string
+          timestamp?: string
+          user_id?: string | null
+          userverified?: boolean | null
+        }
+        Update: {
+          id?: string
+          medication_id?: string
+          medicationname?: string
+          notes?: string | null
+          pillverified?: boolean | null
+          status?: string
+          timestamp?: string
+          user_id?: string | null
+          userverified?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "adherence_history_medication_id_fkey"
+            columns: ["medication_id"]
+            isOneToOne: false
+            referencedRelation: "medications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      medications: {
+        Row: {
+          color: string
+          created_at: string
+          dosage: string
+          frequency: string
+          id: string
+          instructions: string | null
+          is_active: boolean
+          name: string
+          next_dose: string
+          refill_date: string | null
+          time_of_day: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          dosage: string
+          frequency: string
+          id?: string
+          instructions?: string | null
+          is_active?: boolean
+          name: string
+          next_dose: string
+          refill_date?: string | null
+          time_of_day: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          dosage?: string
+          frequency?: string
+          id?: string
+          instructions?: string | null
+          is_active?: boolean
+          name?: string
+          next_dose?: string
+          refill_date?: string | null
+          time_of_day?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          id: string
+          name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
