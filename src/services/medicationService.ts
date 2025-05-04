@@ -43,9 +43,10 @@ export const getMedicationById = async (id: string) => {
 };
 
 export const createMedication = async (medication: MedicationInput) => {
-  // Ensure next_dose and refill_date are strings if they are Date objects
+  // Always include the mock user_id for our development user
   const dbMedication = {
     ...medication,
+    user_id: 'mock-user-id', // This matches our mock user ID from AuthContext
     next_dose: medication.next_dose,
     refill_date: medication.refill_date
   };
