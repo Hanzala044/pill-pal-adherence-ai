@@ -1,57 +1,21 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { PlusCircle, PillIcon, Search, Loader2 } from 'lucide-react';
+import { PlusCircle, PillIcon, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import AddMedicationForm from '@/components/AddMedicationForm';
 import MedicationCard from '@/components/MedicationCard';
-import { getMedications } from '@/services/medicationService';
-import { useToast } from '@/components/ui/use-toast';
-import { useQuery } from '@tanstack/react-query';
+import { mockMedications } from '@/utils/mockData';
 
 const MedicationPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
-  const { toast } = useToast();
 
-  const { 
-    data: medications = [], 
-    isLoading, 
-    error, 
-    refetch 
-  } = useQuery({
-    queryKey: ['medications'],
-    queryFn: getMedications,
-  });
-
-  useEffect(() => {
-    if (error) {
-      console.error('Error fetching medications:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load medications. Please try again.",
-        variant: "destructive",
-      });
-    }
-  }, [error, toast]);
-
-  const filteredMedications = medications.filter(
-    (med: any) => med.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredMedications = mockMedications.filter(
+    med => med.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const activeMedications = filteredMedications.filter((med: any) => med.is_active);
-  const inactiveMedications = filteredMedications.filter((med: any) => !med.is_active);
-
-  const handleAddSuccess = () => {
-    setShowAddForm(false);
-    refetch();
-    toast({
-      title: "Medication added",
-      description: "Your new medication has been added successfully.",
-    });
-  };
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -71,10 +35,7 @@ const MedicationPage = () => {
 
       {showAddForm && (
         <div className="mb-6">
-          <AddMedicationForm 
-            onSuccess={handleAddSuccess}
-            onCancel={() => setShowAddForm(false)}
-          />
+          <AddMedicationForm />
         </div>
       )}
 
@@ -91,117 +52,84 @@ const MedicationPage = () => {
         </div>
       </div>
 
-      {isLoading ? (
-        <div className="flex justify-center items-center h-64">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-      ) : (
-        <Tabs defaultValue="all" className="w-full">
-          <TabsList className="bg-gradient-to-r from-purple-100 to-pink-100 p-1 rounded-full">
-            <TabsTrigger 
-              value="all" 
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white rounded-full"
-            >
-              All ({filteredMedications.length})
-            </TabsTrigger>
-            <TabsTrigger 
-              value="active" 
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white rounded-full"
-            >
-              Active ({activeMedications.length})
-            </TabsTrigger>
-            <TabsTrigger 
-              value="inactive" 
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white rounded-full"
-            >
-              Inactive ({inactiveMedications.length})
-            </TabsTrigger>
-          </TabsList>
+      <Tabs defaultValue="all" className="w-full">
+        <TabsList className="bg-gradient-to-r from-purple-100 to-pink-100 p-1 rounded-full">
+          <TabsTrigger 
+            value="all" 
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white rounded-full"
+          >
+            All
+          </TabsTrigger>
+          <TabsTrigger 
+            value="active" 
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white rounded-full"
+          >
+            Active
+          </TabsTrigger>
+          <TabsTrigger 
+            value="inactive" 
+            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white rounded-full"
+          >
+            Inactive
+          </TabsTrigger>
+        </TabsList>
 
-          <TabsContent value="all" className="mt-4">
-            {filteredMedications.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredMedications.map((medication: any) => (
-                  <MedicationCard 
-                    key={medication.id} 
-                    medication={medication} 
-                    className="border-purple-200 hover:border-purple-400 transition-colors duration-300"
-                    onUpdate={refetch}
-                  />
-                ))}
+        <TabsContent value="all" className="mt-4">
+          {filteredMedications.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredMedications.map((medication) => (
+                <MedicationCard 
+                  key={medication.id} 
+                  medication={medication} 
+                  className="border-purple-200 hover:border-purple-400 transition-colors duration-300"
+                />
+              ))}
+            </div>
+          ) : (
+            <Card className="border-purple-200">
+              <CardContent className="py-10 text-center">
+                <div className="flex justify-center mb-4">
+                  <PillIcon className="h-12 w-12 text-purple-300" />
+                </div>
+                <h3 className="text-lg font-medium mb-2 text-purple-700">No medications found</h3>
+                <p className="text-purple-500 mb-4">
+                  {searchTerm ? `No results for "${searchTerm}"` : "You haven't added any medications yet"}
+                </p>
+                <Button 
+                  onClick={() => setShowAddForm(true)}
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                >
+                  Add Medication
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+        
+        <TabsContent value="active" className="mt-4">
+          <Card className="border-purple-200">
+            <CardContent className="py-10 text-center">
+              <div className="flex justify-center mb-4">
+                <PillIcon className="h-12 w-12 text-purple-300" />
               </div>
-            ) : (
-              <Card className="border-purple-200">
-                <CardContent className="py-10 text-center">
-                  <div className="flex justify-center mb-4">
-                    <PillIcon className="h-12 w-12 text-purple-300" />
-                  </div>
-                  <h3 className="text-lg font-medium mb-2 text-purple-700">No medications found</h3>
-                  <p className="text-purple-500 mb-4">
-                    {searchTerm ? `No results for "${searchTerm}"` : "You haven't added any medications yet"}
-                  </p>
-                  <Button 
-                    onClick={() => setShowAddForm(true)}
-                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-                  >
-                    Add Medication
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
-          
-          <TabsContent value="active" className="mt-4">
-            {activeMedications.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {activeMedications.map((medication: any) => (
-                  <MedicationCard 
-                    key={medication.id} 
-                    medication={medication} 
-                    className="border-purple-200 hover:border-purple-400 transition-colors duration-300"
-                    onUpdate={refetch}
-                  />
-                ))}
+              <h3 className="text-lg font-medium text-purple-700">Active medications</h3>
+              <p className="text-purple-500">This is a placeholder for the active medications tab</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="inactive" className="mt-4">
+          <Card className="border-purple-200">
+            <CardContent className="py-10 text-center">
+              <div className="flex justify-center mb-4">
+                <PillIcon className="h-12 w-12 text-purple-300" />
               </div>
-            ) : (
-              <Card className="border-purple-200">
-                <CardContent className="py-10 text-center">
-                  <div className="flex justify-center mb-4">
-                    <PillIcon className="h-12 w-12 text-purple-300" />
-                  </div>
-                  <h3 className="text-lg font-medium text-purple-700">No active medications</h3>
-                  <p className="text-purple-500">{searchTerm ? `No active results for "${searchTerm}"` : "You don't have any active medications"}</p>
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
-          
-          <TabsContent value="inactive" className="mt-4">
-            {inactiveMedications.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {inactiveMedications.map((medication: any) => (
-                  <MedicationCard 
-                    key={medication.id} 
-                    medication={medication} 
-                    className="border-purple-200 hover:border-purple-400 transition-colors duration-300"
-                    onUpdate={refetch}
-                  />
-                ))}
-              </div>
-            ) : (
-              <Card className="border-purple-200">
-                <CardContent className="py-10 text-center">
-                  <div className="flex justify-center mb-4">
-                    <PillIcon className="h-12 w-12 text-purple-300" />
-                  </div>
-                  <h3 className="text-lg font-medium text-purple-700">No inactive medications</h3>
-                  <p className="text-purple-500">{searchTerm ? `No inactive results for "${searchTerm}"` : "You don't have any inactive medications"}</p>
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
-        </Tabs>
-      )}
+              <h3 className="text-lg font-medium text-purple-700">Inactive medications</h3>
+              <p className="text-purple-500">This is a placeholder for the inactive medications tab</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

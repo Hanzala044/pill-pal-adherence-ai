@@ -2,11 +2,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Camera, CheckCircle, X, PillIcon, UserCheck, Loader2 } from 'lucide-react';
+import { Camera, CheckCircle, X, PillIcon, UserCheck } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
-import { useQuery } from '@tanstack/react-query';
-import { getMedications } from '@/services/medicationService';
-import { recordAdherence } from '@/services/adherenceService';
+import { mockMedications } from '@/utils/mockData';
 
 export default function CameraView() {
   const [cameraActive, setCameraActive] = useState(false);
@@ -14,27 +12,10 @@ export default function CameraView() {
   const [userVerified, setUserVerified] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [complete, setComplete] = useState(false);
-  const [selectedMedication, setSelectedMedication] = useState<any>(null);
+  const [selectedMedication, setSelectedMedication] = useState(mockMedications[0]);
   const { toast } = useToast();
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
-
-  const { data: medications = [], isLoading } = useQuery({
-    queryKey: ['medications'],
-    queryFn: getMedications,
-  });
-
-  // Set the first active medication as the default selected option when data loads
-  useEffect(() => {
-    if (medications && medications.length > 0) {
-      const activeMedications = medications.filter((med: any) => med.is_active);
-      if (activeMedications.length > 0) {
-        setSelectedMedication(activeMedications[0]);
-      } else {
-        setSelectedMedication(medications[0]);
-      }
-    }
-  }, [medications]);
 
   // Clean up function to stop camera when component unmounts or camera deactivates
   useEffect(() => {
@@ -47,15 +28,6 @@ export default function CameraView() {
 
   // Function to start the camera
   const activateCamera = async () => {
-    if (!selectedMedication) {
-      toast({
-        title: "No medication selected",
-        description: "Please select a medication before proceeding.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     try {
       // Request access to the user's camera
       const stream = await navigator.mediaDevices.getUserMedia({ 
@@ -107,28 +79,11 @@ export default function CameraView() {
     }
   };
 
-  const handleCapture = async () => {
-    if (!selectedMedication) {
-      toast({
-        title: "No medication selected",
-        description: "Please select a medication before recording adherence.",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const handleCapture = () => {
     setProcessing(true);
     
-    try {
-      // Record the adherence
-      await recordAdherence({
-        medication_id: selectedMedication.id,
-        medicationName: selectedMedication.name,
-        status: 'taken',
-        pillVerified: pillDetected,
-        userVerified: userVerified,
-      });
-      
+    // Simulate processing
+    setTimeout(() => {
       setProcessing(false);
       setComplete(true);
       toast({
@@ -136,15 +91,7 @@ export default function CameraView() {
         description: "Your adherence record has been updated.",
         variant: "default",
       });
-    } catch (error) {
-      console.error("Error recording adherence:", error);
-      toast({
-        title: "Error",
-        description: "Failed to record your medication intake.",
-        variant: "destructive",
-      });
-      setProcessing(false);
-    }
+    }, 2000);
   };
 
   const resetCamera = () => {
@@ -167,18 +114,10 @@ export default function CameraView() {
     setComplete(false);
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">Medication Verification</h1>
+        <h1 className="text-3xl font-bold">Medication Verification</h1>
         <p className="text-muted-foreground mt-1">
           Verify your medication intake using your camera
         </p>
@@ -252,14 +191,7 @@ export default function CameraView() {
                             disabled={!pillDetected || !userVerified || processing}
                             onClick={handleCapture}
                           >
-                            {processing ? (
-                              <>
-                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                Processing...
-                              </>
-                            ) : (
-                              "Verify Intake"
-                            )}
+                            {processing ? "Processing..." : "Verify Intake"}
                           </Button>
                         </>
                       ) : (
@@ -279,39 +211,25 @@ export default function CameraView() {
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Selected Medication</h2>
         
-        {medications.length === 0 ? (
-          <Card>
-            <CardContent className="py-8 text-center">
-              <p className="text-muted-foreground">You haven't added any medications yet</p>
-              <Button className="mt-4 bg-gradient-to-r from-purple-500 to-pink-500" asChild>
-                <a href="/medications">Add Medication</a>
-              </Button>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {medications
-              .filter((med: any) => med.is_active)
-              .slice(0, 3)
-              .map((medication: any) => (
-                <Card 
-                  key={medication.id}
-                  className={`cursor-pointer transition-all ${medication.id === selectedMedication?.id ? 'ring-2 ring-primary' : ''}`}
-                  onClick={() => setSelectedMedication(medication)}
-                >
-                  <CardContent className="p-4 flex items-start gap-3">
-                    <div className="bg-primary/10 p-2 rounded-md">
-                      <PillIcon className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <div className="font-medium">{medication.name}</div>
-                      <div className="text-sm text-muted-foreground">{medication.dosage}</div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-          </div>
-        )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {mockMedications.slice(0, 3).map((medication) => (
+            <Card 
+              key={medication.id}
+              className={`cursor-pointer transition-all ${medication.id === selectedMedication.id ? 'ring-2 ring-primary' : ''}`}
+              onClick={() => setSelectedMedication(medication)}
+            >
+              <CardContent className="p-4 flex items-start gap-3">
+                <div className="bg-primary/10 p-2 rounded-md">
+                  <PillIcon className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <div className="font-medium">{medication.name}</div>
+                  <div className="text-sm text-muted-foreground">{medication.dosage}</div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
   );

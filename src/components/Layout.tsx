@@ -1,36 +1,15 @@
 
 import React from 'react';
 import Header from './Header';
-import { Outlet, useLocation, Link } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Home, Camera, PillIcon, Calendar, Info, Settings, Phone, LogOut, User } from 'lucide-react';
+import { Home, Camera, PillIcon, Calendar, Info, Settings, Phone } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import AnimatedBackground from './AnimatedBackground';
-import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/components/ui/use-toast';
 
 export default function Layout() {
   const location = useLocation();
   const isMobile = useIsMobile();
-  const { signOut, user } = useAuth();
-  const { toast } = useToast();
-  
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      toast({
-        title: "Signed out successfully",
-        description: "You have been logged out of your account.",
-      });
-    } catch (error) {
-      console.error('Error signing out:', error);
-      toast({
-        title: "Error",
-        description: "There was a problem signing out. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
   
   const navigation = [
     { name: 'Dashboard', href: '/', icon: Home },
@@ -50,50 +29,26 @@ export default function Layout() {
       <div className="flex-1 flex relative">
         {!isMobile && (
           <div className="w-64 gradient-card border-r border-border/30 p-4 hidden md:block">
-            <div className="flex flex-col h-full">
-              <nav className="space-y-2 flex-1">
-                {navigation.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = location.pathname === item.href;
-                  return (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      className={`flex items-center space-x-3 px-3 py-2 rounded-md transition-colors ${
-                        isActive 
-                          ? 'gradient-button text-white' 
-                          : 'hover:gradient-border text-muted-foreground hover:text-accent-foreground'
-                      }`}
-                    >
-                      <Icon className="h-5 w-5" />
-                      <span>{item.name}</span>
-                    </Link>
-                  );
-                })}
-
-                <Link
-                  to="/profile"
-                  className={`flex items-center space-x-3 px-3 py-2 rounded-md transition-colors ${
-                    location.pathname === '/profile'
-                      ? 'gradient-button text-white' 
-                      : 'hover:gradient-border text-muted-foreground hover:text-accent-foreground'
-                  }`}
-                >
-                  <User className="h-5 w-5" />
-                  <span>Profile</span>
-                </Link>
-              </nav>
-              
-              <div className="mt-4 pt-4 border-t border-border/30">
-                <button
-                  onClick={handleSignOut}
-                  className="flex w-full items-center space-x-3 px-3 py-2 rounded-md transition-colors text-muted-foreground hover:text-red-500"
-                >
-                  <LogOut className="h-5 w-5" />
-                  <span>Sign Out</span>
-                </button>
-              </div>
-            </div>
+            <nav className="space-y-2">
+              {navigation.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.href;
+                return (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    className={`flex items-center space-x-3 px-3 py-2 rounded-md transition-colors ${
+                      isActive 
+                        ? 'gradient-button text-white' 
+                        : 'hover:gradient-border text-muted-foreground hover:text-accent-foreground'
+                    }`}
+                  >
+                    <Icon className="h-5 w-5" />
+                    <span>{item.name}</span>
+                  </a>
+                );
+              })}
+            </nav>
           </div>
         )}
         
@@ -108,16 +63,16 @@ export default function Layout() {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.href;
                 return (
-                  <Link
+                  <a
                     key={item.name}
-                    to={item.href}
+                    href={item.href}
                     className={`flex flex-col items-center p-2 ${
                       isActive ? 'text-primary' : 'text-muted-foreground'
                     }`}
                   >
                     <Icon className="h-5 w-5" />
                     <span className="text-xs mt-1">{item.name}</span>
-                  </Link>
+                  </a>
                 );
               })}
             </div>
