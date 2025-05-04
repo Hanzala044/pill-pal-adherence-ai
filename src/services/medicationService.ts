@@ -46,12 +46,8 @@ export const createMedication = async (medication: MedicationInput) => {
   // Ensure next_dose and refill_date are strings if they are Date objects
   const dbMedication = {
     ...medication,
-    next_dose: medication.next_dose instanceof Date 
-      ? medication.next_dose.toISOString() 
-      : medication.next_dose,
-    refill_date: medication.refill_date instanceof Date 
-      ? medication.refill_date.toISOString() 
-      : medication.refill_date
+    next_dose: medication.next_dose,
+    refill_date: medication.refill_date
   };
 
   const { data, error } = await supabase
@@ -73,12 +69,8 @@ export const updateMedication = async (id: string, medication: Partial<Medicatio
   const dbMedication = {
     ...medication,
     updated_at: new Date().toISOString(),
-    next_dose: medication.next_dose instanceof Date 
-      ? medication.next_dose.toISOString() 
-      : medication.next_dose,
-    refill_date: medication.refill_date instanceof Date 
-      ? medication.refill_date.toISOString() 
-      : medication.refill_date
+    next_dose: medication.next_dose,
+    refill_date: medication.refill_date
   };
 
   const { data, error } = await supabase
