@@ -20,6 +20,7 @@ export interface AdherenceRecord {
   userVerified: boolean;
 }
 
+// Using an array that can be modified at runtime instead of a const
 export const mockMedications: Medication[] = [
   {
     id: '1',

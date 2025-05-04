@@ -29,7 +29,7 @@ const MedicationPage = () => {
           onClick={() => setShowAddForm(!showAddForm)}
         >
           <PlusCircle className="h-5 w-5 mr-1" />
-          Add Medication
+          {showAddForm ? 'Hide Form' : 'Add Medication'}
         </Button>
       </div>
 
