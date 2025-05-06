@@ -46,6 +46,7 @@ const MedicationPage = () => {
   const [medications, setMedications] = useState<Medication[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
+  const [useMockData, setUseMockData] = useState(false);
   const { toast } = useToast();
 
   // Map DB medication to the application's Medication type
@@ -63,12 +64,13 @@ const MedicationPage = () => {
     };
   };
 
-  // Fetch medications from Supabase
+  // Fetch medications from Supabase or use mock data
   useEffect(() => {
     async function fetchMedications() {
       try {
         setLoading(true);
         
+        // Try to get data from Supabase
         let { data, error } = await supabase
           .from('medications')
           .select('*');
@@ -79,10 +81,12 @@ const MedicationPage = () => {
           // Map database records to the Medication type
           const mappedMedications = data.map(mapDbMedicationToMedication);
           setMedications(mappedMedications);
+          setUseMockData(false);
         } else {
           // If no data in the database yet, use mock data for demo purposes
           console.log('No data in database, using mock data');
           setMedications(mockMedications as Medication[]);
+          setUseMockData(true);
         }
       } catch (error) {
         console.error('Error fetching medications:', error);
@@ -94,6 +98,7 @@ const MedicationPage = () => {
         
         // Fall back to mock data on error
         setMedications(mockMedications as Medication[]);
+        setUseMockData(true);
       } finally {
         setLoading(false);
       }
@@ -113,6 +118,12 @@ const MedicationPage = () => {
 
   // Function to refresh medications after adding new one
   const refreshMedications = async () => {
+    if (useMockData) {
+      // If we're using mock data, just update from the mock array
+      setMedications([...mockMedications]);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('medications')

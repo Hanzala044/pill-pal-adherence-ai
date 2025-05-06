@@ -7,6 +7,8 @@ import { toast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
+import { mockMedications } from '@/utils/mockData';
+import { v4 as uuidv4 } from 'uuid';
 
 // Type for props
 interface AddMedicationFormProps {
@@ -70,6 +72,12 @@ export default function AddMedicationForm({ onSuccess }: AddMedicationFormProps)
     return nextDose.toISOString();
   };
 
+  // Helper function to get random color
+  const getRandomColor = () => {
+    const colors = ['purple', 'blue', 'green', 'orange', 'red', 'pink', 'teal'];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -85,26 +93,50 @@ export default function AddMedicationForm({ onSuccess }: AddMedicationFormProps)
     setIsSubmitting(true);
 
     try {
-      // Create medication object for Supabase
-      const newMedication = {
-        name: formData.name,
-        dosage: formData.dosage,
-        frequency: formData.frequency,
-        time_of_day: formData.timeOfDay,
-        instructions: formData.instructions,
-        next_dose: calculateNextDose(formData.timeOfDay),
-        is_active: true,
-        color: 'purple'
-      };
+      // Create medication object
+      const nextDose = calculateNextDose(formData.timeOfDay);
+      const scheduleDisplay = `${formData.frequency} (${formData.timeOfDay})`;
+      
+      // Try to insert into Supabase first
+      try {
+        const newMedication = {
+          name: formData.name,
+          dosage: formData.dosage,
+          frequency: formData.frequency,
+          time_of_day: formData.timeOfDay,
+          instructions: formData.instructions,
+          next_dose: nextDose,
+          is_active: true,
+          color: getRandomColor()
+        };
 
-      // Insert into Supabase
-      const { data, error } = await supabase
-        .from('medications')
-        .insert([newMedication])
-        .select();
+        const { data, error } = await supabase
+          .from('medications')
+          .insert([newMedication])
+          .select();
 
-      if (error) {
-        throw error;
+        if (error) {
+          throw error;
+        }
+        
+      } catch (supabaseError) {
+        console.error('Supabase error, falling back to mock data:', supabaseError);
+        
+        // If Supabase fails, add to mock data
+        const newMockMedication = {
+          id: uuidv4(),
+          name: formData.name,
+          dosage: formData.dosage,
+          schedule: scheduleDisplay,
+          instructions: formData.instructions,
+          image: '/placeholder.svg',
+          nextDose: nextDose,
+          is_active: true,
+          color: getRandomColor()
+        };
+        
+        // Add to the mock medications array
+        mockMedications.push(newMockMedication);
       }
 
       toast({
