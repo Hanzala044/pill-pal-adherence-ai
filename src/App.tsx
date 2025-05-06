@@ -17,6 +17,7 @@ import ContactPage from "./pages/ContactPage";
 import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
 import SplashScreen from "./components/SplashScreen";
+import SignInPage from "./pages/SignInPage";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +52,7 @@ const App = () => {
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/services" element={<ServicesPage />} />
                 <Route path="/contact" element={<ContactPage />} />
+                <Route path="/signin" element={<SignInPage />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

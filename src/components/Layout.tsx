@@ -3,7 +3,7 @@ import React from 'react';
 import Header from './Header';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Home, Camera, PillIcon, Calendar, Info, Settings, Phone } from 'lucide-react';
+import { Home, Camera, PillIcon, Calendar, Info, Settings, Phone, LogIn } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import AnimatedBackground from './AnimatedBackground';
 
@@ -19,6 +19,7 @@ export default function Layout() {
     { name: 'About Us', href: '/about', icon: Info },
     { name: 'Services', href: '/services', icon: Settings },
     { name: 'Contact', href: '/contact', icon: Phone },
+    { name: 'Sign In', href: '/signin', icon: LogIn },
   ];
 
   return (
