@@ -23,15 +23,31 @@ export default function CameraView() {
   // Clean up function to stop camera when component unmounts or camera deactivates
   useEffect(() => {
     return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
-      }
+      stopCameraStream();
     };
   }, []);
+
+  // Function to stop any active camera stream
+  const stopCameraStream = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => {
+        track.stop();
+      });
+      streamRef.current = null;
+    }
+    
+    // Reset video element
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+  };
 
   // Function to start the camera
   const activateCamera = async () => {
     try {
+      // First ensure any previous streams are stopped
+      stopCameraStream();
+      
       // Reset states if previously used
       setPillDetected(false);
       setUserVerified(false);
@@ -40,16 +56,27 @@ export default function CameraView() {
       
       console.log("Attempting to activate camera...");
       
-      // Request access to the user's camera
+      // Set a timeout to detect if permissions hang
+      const permissionTimeout = setTimeout(() => {
+        console.log("Camera permission request timed out");
+        setCameraError("Camera permission request timed out. Please check your browser settings.");
+        setShowErrorDialog(true);
+      }, 5000);
+      
+      // Request access to the user's camera with constraints for mobile devices
       const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
-          facingMode: 'environment', // Use back camera on mobile if available
+        video: {
           width: { ideal: 1280 },
-          height: { ideal: 720 }
-        } 
+          height: { ideal: 720 },
+          facingMode: { ideal: 'environment' } // Prefer back camera on mobile
+        },
+        audio: false
       });
       
-      console.log("Camera access granted:", stream);
+      // Clear the permission timeout since we got a response
+      clearTimeout(permissionTimeout);
+      
+      console.log("Camera access granted", stream);
       
       // Save stream reference for cleanup
       streamRef.current = stream;
@@ -57,49 +84,72 @@ export default function CameraView() {
       // Set the stream as the video element's source
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        videoRef.current.onloadedmetadata = () => {
+        videoRef.current.muted = true; // Ensure the video is muted
+        
+        // Wait for metadata to load before playing
+        videoRef.current.onloadedmetadata = async () => {
           console.log("Video metadata loaded");
+          
           if (videoRef.current) {
-            videoRef.current.play()
-              .then(() => console.log("Video playback started"))
-              .catch(e => console.error("Error playing video:", e));
+            try {
+              // Some browsers require user interaction before playing
+              await videoRef.current.play();
+              console.log("Video playback started");
+              setCameraActive(true);
+              
+              toast({
+                title: "Camera activated",
+                description: "Please center the pill in the frame",
+              });
+              
+              // Simulate pill detection after a delay
+              setTimeout(() => {
+                setPillDetected(true);
+                toast({
+                  title: "Pill detected",
+                  description: "Verifying medication...",
+                });
+                
+                // Simulate user verification after pill detection
+                setTimeout(() => {
+                  setUserVerified(true);
+                  toast({
+                    title: "User verified",
+                    description: "Medication intake confirmed",
+                  });
+                }, 1500);
+              }, 2000);
+              
+            } catch (playError) {
+              console.error("Error playing video:", playError);
+              setCameraError(`Video playback error: ${playError instanceof Error ? playError.message : 'Unknown error'}`);
+              setShowErrorDialog(true);
+              stopCameraStream();
+            }
           }
         };
-      }
-      
-      setCameraActive(true);
-      toast({
-        title: "Camera activated",
-        description: "Please center the pill in the frame",
-      });
-      
-      // Simulate pill detection after a delay
-      setTimeout(() => {
-        setPillDetected(true);
-        toast({
-          title: "Pill detected",
-          description: "Verifying medication...",
-        });
         
-        // Simulate user verification after pill detection
-        setTimeout(() => {
-          setUserVerified(true);
-          toast({
-            title: "User verified",
-            description: "Medication intake confirmed",
-          });
-        }, 1500);
-      }, 2000);
+        // Handle errors that might occur after initial setup
+        videoRef.current.onerror = (event) => {
+          console.error("Video element error:", event);
+          setCameraError("Video element encountered an error");
+          setShowErrorDialog(true);
+          stopCameraStream();
+        };
+      }
     } catch (error) {
       console.error("Error accessing camera:", error);
       const errorMessage = error instanceof Error ? error.message : "Unknown camera error";
       setCameraError(errorMessage);
       setShowErrorDialog(true);
+      
       toast({
         title: "Camera Error",
         description: "Could not access your camera. Please check permissions.",
         variant: "destructive",
       });
+      
+      stopCameraStream();
     }
   };
 
@@ -119,16 +169,7 @@ export default function CameraView() {
   };
 
   const resetCamera = () => {
-    // Stop all tracks from the stream
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-      streamRef.current = null;
-    }
-    
-    // Reset video element
-    if (videoRef.current) {
-      videoRef.current.srcObject = null;
-    }
+    stopCameraStream();
     
     // Reset states
     setCameraActive(false);
@@ -156,6 +197,8 @@ export default function CameraView() {
                 <Button 
                   onClick={activateCamera}
                   variant="cosmic"
+                  size="lg"
+                  className="animate-pulse"
                 >
                   Activate Camera
                 </Button>
@@ -274,13 +317,24 @@ export default function CameraView() {
               <li>Camera permissions were denied</li>
               <li>Your device doesn't have a camera</li>
               <li>Another application is using your camera</li>
+              <li>You need to allow camera access in your browser settings</li>
             </ul>
             {cameraError && (
               <div className="bg-destructive/10 p-4 rounded-md">
                 <p className="text-sm text-destructive"><strong>Error details:</strong> {cameraError}</p>
               </div>
             )}
-            <div className="flex justify-end">
+            <div className="flex justify-between">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setShowErrorDialog(false);
+                  // Wait a bit and try again
+                  setTimeout(activateCamera, 500);
+                }}
+              >
+                Try Again
+              </Button>
               <Button onClick={() => setShowErrorDialog(false)}>Close</Button>
             </div>
           </div>
