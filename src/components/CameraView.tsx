@@ -2,9 +2,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Camera, CheckCircle, X, PillIcon, UserCheck } from 'lucide-react';
+import { Camera, CheckCircle, X, PillIcon, UserCheck, CameraOff } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { mockMedications } from '@/utils/mockData';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export default function CameraView() {
   const [cameraActive, setCameraActive] = useState(false);
@@ -13,6 +14,8 @@ export default function CameraView() {
   const [processing, setProcessing] = useState(false);
   const [complete, setComplete] = useState(false);
   const [selectedMedication, setSelectedMedication] = useState(mockMedications[0]);
+  const [cameraError, setCameraError] = useState<string | null>(null);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
   const { toast } = useToast();
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -29,6 +32,14 @@ export default function CameraView() {
   // Function to start the camera
   const activateCamera = async () => {
     try {
+      // Reset states if previously used
+      setPillDetected(false);
+      setUserVerified(false);
+      setComplete(false);
+      setCameraError(null);
+      
+      console.log("Attempting to activate camera...");
+      
       // Request access to the user's camera
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
@@ -38,12 +49,22 @@ export default function CameraView() {
         } 
       });
       
+      console.log("Camera access granted:", stream);
+      
       // Save stream reference for cleanup
       streamRef.current = stream;
       
       // Set the stream as the video element's source
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        videoRef.current.onloadedmetadata = () => {
+          console.log("Video metadata loaded");
+          if (videoRef.current) {
+            videoRef.current.play()
+              .then(() => console.log("Video playback started"))
+              .catch(e => console.error("Error playing video:", e));
+          }
+        };
       }
       
       setCameraActive(true);
@@ -71,6 +92,9 @@ export default function CameraView() {
       }, 2000);
     } catch (error) {
       console.error("Error accessing camera:", error);
+      const errorMessage = error instanceof Error ? error.message : "Unknown camera error";
+      setCameraError(errorMessage);
+      setShowErrorDialog(true);
       toast({
         title: "Camera Error",
         description: "Could not access your camera. Please check permissions.",
@@ -129,18 +153,21 @@ export default function CameraView() {
             {!cameraActive ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <Camera className="h-16 w-16 text-muted mb-4" />
-                <Button onClick={activateCamera}>Activate Camera</Button>
+                <Button 
+                  onClick={activateCamera}
+                  variant="cosmic"
+                >
+                  Activate Camera
+                </Button>
               </div>
             ) : (
               <>
                 <video 
                   ref={videoRef} 
                   autoPlay 
-                  playsInline 
+                  playsInline
+                  muted
                   className="absolute inset-0 w-full h-full object-cover"
-                  onLoadedMetadata={() => {
-                    if (videoRef.current) videoRef.current.play();
-                  }}
                 />
                 
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -231,6 +258,34 @@ export default function CameraView() {
           ))}
         </div>
       </div>
+      
+      {/* Error Dialog */}
+      <Dialog open={showErrorDialog} onOpenChange={setShowErrorDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Camera Access Error</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="flex items-center justify-center text-destructive mb-4">
+              <CameraOff className="h-12 w-12" />
+            </div>
+            <p>Unable to access your camera. This could be due to:</p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li>Camera permissions were denied</li>
+              <li>Your device doesn't have a camera</li>
+              <li>Another application is using your camera</li>
+            </ul>
+            {cameraError && (
+              <div className="bg-destructive/10 p-4 rounded-md">
+                <p className="text-sm text-destructive"><strong>Error details:</strong> {cameraError}</p>
+              </div>
+            )}
+            <div className="flex justify-end">
+              <Button onClick={() => setShowErrorDialog(false)}>Close</Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

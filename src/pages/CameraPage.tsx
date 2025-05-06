@@ -4,7 +4,9 @@ import CameraView from '@/components/CameraView';
 
 const CameraPage = () => {
   return (
-    <CameraView />
+    <div className="animate-fade-in">
+      <CameraView />
+    </div>
   );
 };
 
