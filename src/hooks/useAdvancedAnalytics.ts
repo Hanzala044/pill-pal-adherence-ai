@@ -13,6 +13,10 @@ interface AdvancedMetrics {
     direction: 'improving' | 'declining' | 'stable';
     confidence: number;
   };
+  healthTrends: {
+    direction: 'improving' | 'declining' | 'stable';
+    confidence: number;
+  };
   predictions: {
     nextWeekAdherence: number;
     riskFactors: string[];
@@ -20,8 +24,16 @@ interface AdvancedMetrics {
   };
 }
 
+interface AdherencePattern {
+  dayOfWeek: string;
+  timeOfDay: string;
+  successRate: number;
+  medicationName: string;
+}
+
 export const useAdvancedAnalytics = () => {
   const [metrics, setMetrics] = useState<AdvancedMetrics | null>(null);
+  const [patterns, setPatterns] = useState<AdherencePattern[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -69,6 +81,12 @@ export const useAdvancedAnalytics = () => {
         confidence: Math.round(70 + Math.random() * 25)
       };
 
+      // Health trends (same as trends for now)
+      const healthTrends = {
+        direction,
+        confidence: Math.round(70 + Math.random() * 25)
+      };
+
       // Predictions and recommendations
       const predictions = {
         nextWeekAdherence: Math.round(predictedAdherence + (Math.random() * 10 - 5)),
@@ -92,18 +110,39 @@ export const useAdvancedAnalytics = () => {
         timeOptimization,
         insights,
         trends,
+        healthTrends,
         predictions
       };
+    };
+
+    const generatePatterns = (): AdherencePattern[] => {
+      const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      const timesOfDay = ['Morning', 'Afternoon', 'Evening'];
+      const patterns: AdherencePattern[] = [];
+
+      daysOfWeek.forEach(day => {
+        timesOfDay.forEach(time => {
+          patterns.push({
+            dayOfWeek: day,
+            timeOfDay: time,
+            successRate: Math.round(60 + Math.random() * 35), // 60-95% success rate
+            medicationName: mockMedications[Math.floor(Math.random() * mockMedications.length)].name
+          });
+        });
+      });
+
+      return patterns;
     };
 
     // Simulate API call delay
     const timer = setTimeout(() => {
       setMetrics(calculateAdvancedMetrics());
+      setPatterns(generatePatterns());
       setLoading(false);
     }, 1000);
 
     return () => clearTimeout(timer);
   }, []);
 
-  return { metrics, loading };
+  return { metrics, patterns, loading };
 };
