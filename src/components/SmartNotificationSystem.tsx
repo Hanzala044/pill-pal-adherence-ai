@@ -1,159 +1,253 @@
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/shared';
-import { Button } from '@/components/ui/shared';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { Bell, Brain, Clock, Target, Zap } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { Label } from '@/components/ui/label';
+import { Slider } from '@/components/ui/slider';
+import { Bell, BellRing, Clock, Smartphone, MessageSquare, Zap, Brain, AlertTriangle } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
+import { Badge } from '@/components/ui/badge';
 
-interface NotificationSettings {
-  smartReminders: boolean;
-  predictiveAlerts: boolean;
-  adaptiveTiming: boolean;
-  riskAlerts: boolean;
-  socialReminders: boolean;
+interface NotificationPreference {
+  id: string;
+  type: 'medication_reminder' | 'adherence_alert' | 'health_insight' | 'predictive_warning';
+  enabled: boolean;
+  timing: number; // minutes before
+  method: 'push' | 'email' | 'sms';
+  priority: 'low' | 'medium' | 'high';
 }
 
-const SmartNotificationSystem = () => {
-  const [settings, setSettings] = useState<NotificationSettings>({
-    smartReminders: true,
-    predictiveAlerts: true,
-    adaptiveTiming: true,
-    riskAlerts: true,
-    socialReminders: false,
-  });
+interface SmartNotification {
+  id: string;
+  title: string;
+  message: string;
+  type: 'reminder' | 'alert' | 'insight' | 'warning';
+  priority: 'low' | 'medium' | 'high';
+  timestamp: string;
+  read: boolean;
+  actionRequired: boolean;
+}
 
-  const [notifications, setNotifications] = useState([
+export default function SmartNotificationSystem() {
+  const [preferences, setPreferences] = useState<NotificationPreference[]>([
     {
-      id: 1,
-      type: 'smart',
-      title: 'Optimal Medication Time',
-      message: 'Based on your patterns, now is the best time to take your evening medication.',
-      time: '2 minutes ago',
+      id: '1',
+      type: 'medication_reminder',
+      enabled: true,
+      timing: 15,
+      method: 'push',
       priority: 'high'
     },
     {
-      id: 2,
-      type: 'predictive',
-      title: 'Risk Alert',
-      message: 'You have a 73% chance of missing your next dose. Set a reminder?',
-      time: '1 hour ago',
-      priority: 'urgent'
+      id: '2',
+      type: 'adherence_alert',
+      enabled: true,
+      timing: 30,
+      method: 'push',
+      priority: 'medium'
     },
     {
-      id: 3,
-      type: 'adaptive',
-      title: 'Schedule Optimization',
-      message: 'Your medication schedule has been adjusted for better adherence.',
-      time: '3 hours ago',
-      priority: 'medium'
+      id: '3',
+      type: 'health_insight',
+      enabled: false,
+      timing: 0,
+      method: 'email',
+      priority: 'low'
+    },
+    {
+      id: '4',
+      type: 'predictive_warning',
+      enabled: true,
+      timing: 60,
+      method: 'push',
+      priority: 'high'
     }
   ]);
 
-  const updateSetting = async (key: keyof NotificationSettings, value: boolean) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+  const [notifications, setNotifications] = useState<SmartNotification[]>([
+    {
+      id: '1',
+      title: 'Medication Reminder',
+      message: 'Time to take your Lisinopril 10mg',
+      type: 'reminder',
+      priority: 'high',
+      timestamp: new Date().toISOString(),
+      read: false,
+      actionRequired: true
+    },
+    {
+      id: '2',
+      title: 'Adherence Alert',
+      message: 'You missed your medication yesterday. Would you like to log it?',
+      type: 'alert',
+      priority: 'medium',
+      timestamp: new Date(Date.now() - 3600000).toISOString(),
+      read: false,
+      actionRequired: true
+    },
+    {
+      id: '3',
+      title: 'AI Health Insight',
+      message: 'Your adherence pattern suggests you take medications better in the morning. Consider adjusting timing.',
+      type: 'insight',
+      priority: 'low',
+      timestamp: new Date(Date.now() - 7200000).toISOString(),
+      read: true,
+      actionRequired: false
+    }
+  ]);
+
+  const { toast } = useToast();
+
+  const savePreferences = async () => {
+    // Mock save - in real implementation, save to local storage or user preferences
+    console.log('Saving preferences:', preferences);
     
-    // Save to database
-    try {
-      await supabase
-        .from('user_preferences')
-        .upsert({ 
-          setting_key: key, 
-          setting_value: value,
-          updated_at: new Date().toISOString()
-        });
-    } catch (error) {
-      console.error('Error saving notification settings:', error);
+    toast({
+      title: "Preferences Saved",
+      description: "Your notification preferences have been updated.",
+    });
+  };
+
+  const updatePreference = (id: string, updates: Partial<NotificationPreference>) => {
+    setPreferences(prev => 
+      prev.map(pref => 
+        pref.id === id ? { ...pref, ...updates } : pref
+      )
+    );
+  };
+
+  const markAsRead = (notificationId: string) => {
+    setNotifications(prev =>
+      prev.map(notif =>
+        notif.id === notificationId ? { ...notif, read: true } : notif
+      )
+    );
+  };
+
+  const getNotificationIcon = (type: string) => {
+    switch (type) {
+      case 'reminder': return <Clock className="h-5 w-5 text-blue-600" />;
+      case 'alert': return <AlertTriangle className="h-5 w-5 text-red-600" />;
+      case 'insight': return <Brain className="h-5 w-5 text-purple-600" />;
+      case 'warning': return <Zap className="h-5 w-5 text-orange-600" />;
+      default: return <Bell className="h-5 w-5 text-gray-600" />;
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'urgent': return 'border-l-red-500 bg-red-50';
-      case 'high': return 'border-l-orange-500 bg-orange-50';
-      case 'medium': return 'border-l-blue-500 bg-blue-50';
-      default: return 'border-l-gray-500 bg-gray-50';
-    }
-  };
-
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'smart': return <Brain className="h-4 w-4 text-purple-600" />;
-      case 'predictive': return <Target className="h-4 w-4 text-orange-600" />;
-      case 'adaptive': return <Zap className="h-4 w-4 text-blue-600" />;
-      default: return <Bell className="h-4 w-4 text-gray-600" />;
+      case 'high': return 'bg-red-100 text-red-800';
+      case 'medium': return 'bg-yellow-100 text-yellow-800';
+      case 'low': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
-        <h1 className="text-2xl font-bold gradient-text">Smart Notifications</h1>
-        <p className="text-muted-foreground mt-1">AI-powered notification system with predictive insights</p>
+        <h1 className="text-3xl font-bold gradient-text">Smart Notifications</h1>
+        <p className="text-muted-foreground mt-1">
+          AI-powered notification system with predictive alerts
+        </p>
       </div>
 
-      {/* Notification Settings */}
+      {/* Notification Preferences */}
       <Card className="gradient-card">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Brain className="h-5 w-5 text-purple-600" />
-            Intelligence Settings
+            <Bell className="h-5 w-5" />
+            Notification Preferences
           </CardTitle>
+          <CardDescription>
+            Configure your smart notification settings for optimal medication adherence
+          </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="font-medium">Smart Reminders</div>
-              <div className="text-sm text-muted-foreground">AI-optimized timing based on your behavior</div>
-            </div>
-            <Switch
-              checked={settings.smartReminders}
-              onCheckedChange={(checked) => updateSetting('smartReminders', checked)}
-            />
-          </div>
+        <CardContent className="space-y-6">
+          {preferences.map((pref) => (
+            <div key={pref.id} className="space-y-4 p-4 border rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-base font-medium capitalize">
+                    {pref.type.replace('_', ' ')}
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    {pref.type === 'medication_reminder' && 'Reminders before medication time'}
+                    {pref.type === 'adherence_alert' && 'Alerts for missed medications'}
+                    {pref.type === 'health_insight' && 'AI-generated health insights'}
+                    {pref.type === 'predictive_warning' && 'Predictive adherence warnings'}
+                  </p>
+                </div>
+                <Switch
+                  checked={pref.enabled}
+                  onCheckedChange={(enabled) => updatePreference(pref.id, { enabled })}
+                />
+              </div>
 
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="font-medium">Predictive Alerts</div>
-              <div className="text-sm text-muted-foreground">Early warnings for potential missed doses</div>
-            </div>
-            <Switch
-              checked={settings.predictiveAlerts}
-              onCheckedChange={(checked) => updateSetting('predictiveAlerts', checked)}
-            />
-          </div>
+              {pref.enabled && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label className="text-sm">Timing (minutes before)</Label>
+                    <div className="mt-2">
+                      <Slider
+                        value={[pref.timing]}
+                        onValueChange={([timing]) => updatePreference(pref.id, { timing })}
+                        max={120}
+                        min={0}
+                        step={5}
+                        className="w-full"
+                      />
+                      <div className="text-xs text-muted-foreground mt-1">
+                        {pref.timing} minutes
+                      </div>
+                    </div>
+                  </div>
 
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="font-medium">Adaptive Timing</div>
-              <div className="text-sm text-muted-foreground">Automatically adjust schedules for better adherence</div>
-            </div>
-            <Switch
-              checked={settings.adaptiveTiming}
-              onCheckedChange={(checked) => updateSetting('adaptiveTiming', checked)}
-            />
-          </div>
+                  <div>
+                    <Label className="text-sm">Method</Label>
+                    <div className="flex gap-2 mt-2">
+                      {['push', 'email', 'sms'].map((method) => (
+                        <Button
+                          key={method}
+                          variant={pref.method === method ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => updatePreference(pref.id, { method: method as any })}
+                        >
+                          {method === 'push' && <Smartphone className="h-4 w-4 mr-1" />}
+                          {method === 'email' && <MessageSquare className="h-4 w-4 mr-1" />}
+                          {method === 'sms' && <BellRing className="h-4 w-4 mr-1" />}
+                          {method.toUpperCase()}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
 
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="font-medium">Risk Alerts</div>
-              <div className="text-sm text-muted-foreground">Notifications when health risks are detected</div>
+                  <div>
+                    <Label className="text-sm">Priority</Label>
+                    <div className="flex gap-2 mt-2">
+                      {['low', 'medium', 'high'].map((priority) => (
+                        <Button
+                          key={priority}
+                          variant={pref.priority === priority ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => updatePreference(pref.id, { priority: priority as any })}
+                        >
+                          {priority.charAt(0).toUpperCase() + priority.slice(1)}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-            <Switch
-              checked={settings.riskAlerts}
-              onCheckedChange={(checked) => updateSetting('riskAlerts', checked)}
-            />
-          </div>
+          ))}
 
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="font-medium">Social Reminders</div>
-              <div className="text-sm text-muted-foreground">Involve family/caregivers in medication reminders</div>
-            </div>
-            <Switch
-              checked={settings.socialReminders}
-              onCheckedChange={(checked) => updateSetting('socialReminders', checked)}
-            />
+          <div className="flex justify-end">
+            <Button onClick={savePreferences}>
+              Save Preferences
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -162,37 +256,109 @@ const SmartNotificationSystem = () => {
       <Card className="gradient-card">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Bell className="h-5 w-5 text-blue-600" />
-            Recent Smart Notifications
+            <BellRing className="h-5 w-5" />
+            Recent Notifications
           </CardTitle>
+          <CardDescription>
+            Your latest smart notifications and alerts
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {notifications.map((notification) => (
-              <div key={notification.id} className={`p-4 border-l-4 rounded-lg ${getPriorityColor(notification.priority)}`}>
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-3">
-                    {getTypeIcon(notification.type)}
-                    <div>
-                      <div className="font-medium text-sm">{notification.title}</div>
-                      <div className="text-sm text-gray-600 mt-1">{notification.message}</div>
-                      <div className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        {notification.time}
-                      </div>
+              <div
+                key={notification.id}
+                className={`p-4 border rounded-lg transition-all cursor-pointer ${
+                  notification.read ? 'bg-muted/30' : 'bg-background border-primary/20'
+                }`}
+                onClick={() => markAsRead(notification.id)}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 mt-1">
+                    {getNotificationIcon(notification.type)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="font-medium truncate">{notification.title}</p>
+                      <Badge className={getPriorityColor(notification.priority)} variant="secondary">
+                        {notification.priority}
+                      </Badge>
+                      {!notification.read && (
+                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      {notification.message}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(notification.timestamp).toLocaleString()}
+                      </span>
+                      {notification.actionRequired && (
+                        <Button size="sm" variant="outline">
+                          Take Action
+                        </Button>
+                      )}
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm" className="text-xs">
-                    Dismiss
-                  </Button>
                 </div>
               </div>
             ))}
           </div>
         </CardContent>
       </Card>
+
+      {/* AI Notification Intelligence */}
+      <Card className="gradient-card border-purple-200">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Brain className="h-5 w-5 text-purple-600" />
+            AI Notification Intelligence
+          </CardTitle>
+          <CardDescription>
+            Machine learning insights about your notification patterns
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <h4 className="font-medium">Optimal Timing Analysis</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-sm">Morning (6-12 PM)</span>
+                  <span className="text-sm font-medium">92% response rate</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm">Afternoon (12-6 PM)</span>
+                  <span className="text-sm font-medium">78% response rate</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm">Evening (6-10 PM)</span>
+                  <span className="text-sm font-medium">85% response rate</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <h4 className="font-medium">Prediction Accuracy</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-sm">Adherence Predictions</span>
+                  <span className="text-sm font-medium">94% accurate</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm">Risk Assessments</span>
+                  <span className="text-sm font-medium">89% accurate</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm">Timing Optimization</span>
+                  <span className="text-sm font-medium">87% accurate</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
-};
-
-export default SmartNotificationSystem;
+}

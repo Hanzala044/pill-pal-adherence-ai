@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Clock, CheckCircle, Calendar, Activity, AlertTriangle, Brain, TrendingUp, Shield } from 'lucide-react';
+import { Clock, CheckCircle, Calendar, Activity, AlertTriangle, Brain, TrendingUp, Shield, Camera } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Button, Progress } from '@/components/ui/shared';
 import MedicationCard from './MedicationCard';
 import { mockMedications, mockAdherenceHistory } from '@/utils/mockData';
