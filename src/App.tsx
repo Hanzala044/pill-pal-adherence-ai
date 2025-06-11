@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/shared";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -18,6 +17,10 @@ import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
 import SplashScreen from "./components/SplashScreen";
 import SignInPage from "./pages/SignInPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
+import NotificationsPage from "./pages/NotificationsPage";
+import PredictivePage from "./pages/PredictivePage";
+import SecurityPage from "./pages/SecurityPage";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +50,10 @@ const App = () => {
                 <Route path="/camera" element={<CameraPage />} />
                 <Route path="/medications" element={<MedicationPage />} />
                 <Route path="/history" element={<HistoryPage />} />
+                <Route path="/analytics" element={<AnalyticsPage />} />
+                <Route path="/notifications" element={<NotificationsPage />} />
+                <Route path="/predictive" element={<PredictivePage />} />
+                <Route path="/security" element={<SecurityPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/about" element={<AboutPage />} />

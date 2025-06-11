@@ -3,7 +3,7 @@ import React from 'react';
 import Header from './Header';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Home, Camera, PillIcon, Calendar, Info, Settings, Phone, LogIn } from 'lucide-react';
+import { Home, Camera, PillIcon, Calendar, BarChart3, Bell, TrendingUp, Shield, Info, Settings, Phone, LogIn } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import AnimatedBackground from './AnimatedBackground';
 
@@ -16,10 +16,23 @@ export default function Layout() {
     { name: 'Take Medication', href: '/camera', icon: Camera },
     { name: 'Medications', href: '/medications', icon: PillIcon },
     { name: 'History', href: '/history', icon: Calendar },
+    { name: 'Analytics', href: '/analytics', icon: BarChart3 },
+    { name: 'Notifications', href: '/notifications', icon: Bell },
+    { name: 'Predictive', href: '/predictive', icon: TrendingUp },
+    { name: 'Security', href: '/security', icon: Shield },
     { name: 'About Us', href: '/about', icon: Info },
     { name: 'Services', href: '/services', icon: Settings },
     { name: 'Contact', href: '/contact', icon: Phone },
     { name: 'Sign In', href: '/signin', icon: LogIn },
+  ];
+
+  // For mobile, show only the core features
+  const mobileNavigation = [
+    { name: 'Dashboard', href: '/', icon: Home },
+    { name: 'Camera', href: '/camera', icon: Camera },
+    { name: 'Medications', href: '/medications', icon: PillIcon },
+    { name: 'Analytics', href: '/analytics', icon: BarChart3 },
+    { name: 'Security', href: '/security', icon: Shield },
   ];
 
   return (
@@ -60,7 +73,7 @@ export default function Layout() {
         {isMobile && (
           <nav className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-[#1a1a1a] to-[#2d1f3d] border-t border-[#8B5CF6]/20 backdrop-blur-sm p-2">
             <div className="flex justify-around items-center">
-              {navigation.slice(0, 5).map((item) => {
+              {mobileNavigation.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.href;
                 return (

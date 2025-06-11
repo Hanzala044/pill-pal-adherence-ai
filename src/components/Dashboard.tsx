@@ -1,12 +1,15 @@
+
 import React from 'react';
-import { Clock, CheckCircle, Calendar, Activity, AlertTriangle } from 'lucide-react';
+import { Clock, CheckCircle, Calendar, Activity, AlertTriangle, Brain, TrendingUp, Shield } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Button, Progress } from '@/components/ui/shared';
 import MedicationCard from './MedicationCard';
 import { mockMedications, mockAdherenceHistory } from '@/utils/mockData';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAdvancedAnalytics } from '@/hooks/useAdvancedAnalytics';
 
 export default function Dashboard() {
   const isMobile = useIsMobile();
+  const { metrics, loading } = useAdvancedAnalytics();
 
   const upcomingMeds = mockMedications
     .filter(med => new Date(med.nextDose) > new Date())
@@ -26,17 +29,23 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div>
-        <h1 className={`${isMobile ? 'text-2xl' : 'text-3xl'} font-bold`}>Welcome back, John</h1>
-        <p className="text-muted-foreground mt-1">Here's your medication overview for today</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className={`${isMobile ? 'text-2xl' : 'text-3xl'} font-bold gradient-text`}>Welcome back, John</h1>
+          <p className="text-muted-foreground mt-1">AI-powered health insights for today</p>
+        </div>
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-purple-100 to-pink-100">
+          <Brain className="h-4 w-4 text-purple-600" />
+          <span className="text-sm font-medium text-purple-700">AI Active</span>
+        </div>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <Card>
+      {/* Enhanced Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className="gradient-card border-l-4 border-l-green-500">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg font-medium flex items-center gap-2">
-              <Clock className="h-5 w-5 text-primary" />
+              <Clock className="h-5 w-5 text-green-600" />
               Today's Progress
             </CardTitle>
           </CardHeader>
@@ -51,46 +60,106 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="gradient-card border-l-4 border-l-blue-500">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg font-medium flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-primary" />
+              <CheckCircle className="h-5 w-5 text-blue-600" />
               Adherence Rate
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col items-center justify-center">
-            <div className="text-3xl font-bold text-primary">{adherenceRate}%</div>
+            <div className="text-3xl font-bold text-blue-600">{adherenceRate}%</div>
             <p className="text-xs text-muted-foreground">Last 7 days</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="gradient-card border-l-4 border-l-purple-500">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg font-medium flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-primary" />
-              Next Medication
+              <TrendingUp className="h-5 w-5 text-purple-600" />
+              AI Risk Score
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
-            {upcomingMeds[0] ? (
-              <>
-                <p className="font-medium">{upcomingMeds[0].name} {upcomingMeds[0].dosage}</p>
-                <p className="text-sm text-muted-foreground">
-                  {new Date(upcomingMeds[0].nextDose).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })}
-                </p>
-              </>
-            ) : (
-              <p className="text-sm text-muted-foreground">No upcoming medications</p>
-            )}
+          <CardContent className="flex flex-col items-center justify-center">
+            <div className="text-3xl font-bold text-purple-600">{metrics?.riskScore || 15}</div>
+            <p className="text-xs text-muted-foreground">Low risk</p>
           </CardContent>
-          <CardFooter>
-            <Button variant="outline" className="w-full" size="sm" asChild>
-              <a href="/camera">Take Now</a>
+        </Card>
+
+        <Card className="gradient-card border-l-4 border-l-orange-500">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg font-medium flex items-center gap-2">
+              <Brain className="h-5 w-5 text-orange-600" />
+              Predicted Adherence
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center justify-center">
+            <div className="text-3xl font-bold text-orange-600">{metrics?.predictedAdherence || 88}%</div>
+            <p className="text-xs text-muted-foreground">Next 7 days</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* AI Insights Card */}
+      {metrics?.insights && (
+        <Card className="gradient-card border border-purple-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Brain className="h-5 w-5 text-purple-600" />
+              AI Health Insights
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {metrics.insights.slice(0, 2).map((insight, index) => (
+                <div key={index} className="flex items-start gap-3 p-3 bg-white/50 rounded-lg">
+                  <Activity className="h-4 w-4 text-purple-600 mt-0.5" />
+                  <p className="text-sm">{insight}</p>
+                </div>
+              ))}
+            </div>
+            <CardFooter className="px-0 pt-4">
+              <Button variant="outline" className="w-full" size="sm" asChild>
+                <a href="/analytics">View Full Analytics</a>
+              </Button>
+            </CardFooter>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Card className="gradient-card">
+          <CardContent className="p-4 text-center">
+            <Camera className="h-8 w-8 mx-auto mb-2 text-purple-600" />
+            <h3 className="font-medium mb-1">Take Medication</h3>
+            <p className="text-xs text-muted-foreground mb-3">AI-powered verification</p>
+            <Button variant="pill" size="sm" className="w-full" asChild>
+              <a href="/camera">Start Camera</a>
             </Button>
-          </CardFooter>
+          </CardContent>
+        </Card>
+
+        <Card className="gradient-card">
+          <CardContent className="p-4 text-center">
+            <TrendingUp className="h-8 w-8 mx-auto mb-2 text-blue-600" />
+            <h3 className="font-medium mb-1">Predictive Analytics</h3>
+            <p className="text-xs text-muted-foreground mb-3">ML-powered insights</p>
+            <Button variant="pill" size="sm" className="w-full" asChild>
+              <a href="/predictive">View Predictions</a>
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="gradient-card">
+          <CardContent className="p-4 text-center">
+            <Shield className="h-8 w-8 mx-auto mb-2 text-green-600" />
+            <h3 className="font-medium mb-1">Security Center</h3>
+            <p className="text-xs text-muted-foreground mb-3">HIPAA compliant</p>
+            <Button variant="pill" size="sm" className="w-full" asChild>
+              <a href="/security">Security Settings</a>
+            </Button>
+          </CardContent>
         </Card>
       </div>
 
@@ -117,7 +186,7 @@ export default function Dashboard() {
             <a href="/history">View All</a>
           </Button>
         </div>
-        <Card>
+        <Card className="gradient-card">
           <CardContent className="p-0">
             <div className="divide-y divide-border">
               {mockAdherenceHistory.slice(0, 5).map((record) => (
